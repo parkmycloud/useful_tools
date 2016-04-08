@@ -1,0 +1,110 @@
+#!/bin/bash 
+#
+# Adapted from a shell script for CentOS written by Jeffrey M. Hunter
+# http://www.idevelopment.info. 
+#
+# processname: remap-ip
+#
+# description: Associate EC2 instance with Elastic IP and change hostname on boot 
+#
+# Dale Wickizer, ParkMyCloud, Inc.
+# Copyright 2016. All rights reserved.
+# 
+# No warranties, expressed or implied.  
+
+
+#-------------------< From Install Script >-------------------
+export EC2_BASE=<EC2_BASE>
+export EC2_HOME=$EC2_BASE/tools 
+export EC2_PRIVATE_KEY=$EC2_BASE/<KEY>
+export EC2_CERT=$EC2_BASE/certs/<CERT>
+export EC2_URL=https://ec2.<REGION>.amazonaws.com 
+export PATH=$PATH:$EC2_HOME/bin 
+export JAVA_HOME=<JAVA_HOME>
+export AWS_ACCESS_KEY=<ACCESS>
+export AWS_SECRET_KEY=<SECRET>
+
+# Verify Amazon EC2 API Tools 
+test -d "$EC2_HOME/bin" || { 
+    echo "ec2-api-tools not installed."; 
+    if [ "$1" = "stop" ]; then 
+        exit 0; 
+    else 
+        exit 5; 
+    fi; 
+} 
+
+
+# Verify Java Runtime Environment (JRE) 
+test -x "$JAVA_HOME/bin/java" || { 
+    echo "Java Runtime Environment (JRE) not installed."; 
+    if [ "$1" = "stop" ]; then 
+        exit 0; 
+    else 
+        exit 5; 
+    fi; 
+} 
+
+# Verify curl utility 
+test -x "$(which curl)" || { 
+    echo "curl not installed."; 
+    if [ "$1" = "stop" ]; then 
+        exit 0; 
+    else 
+        exit 5; 
+    fi; 
+} 
+
+start() { 
+
+    INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id) 
+    USERDATA=$(curl -s http://169.254.169.254/latest/user-data) 
+    ELASTIC_IP=$(echo $USERDATA | awk 'BEGIN{RS="|";FS="="} /elastic-ip/ {print $2}') 
+    ELASTIC_HOSTNAME=$(echo $USERDATA | awk 'BEGIN{RS="|";FS="="} /hostname/ {print $2}') 
+
+    if [ -n "${ELASTIC_IP}" ]; then 
+	    ec2-associate-address --private-key $EC2_PRIVATE_KEY --cert $EC2_CERT --instance $INSTANCE_ID $ELASTIC_IP 
+    else 
+	    echo "No Elastic IP passed." 
+    fi 
+    
+    if [ -n "${ELASTIC_HOSTNAME}" ]; then 
+	    sudo hostname $ELASTIC_HOSTNAME 
+
+	    sudo cp -f /etc/hostname /etc/hostname.bak
+	   
+	    sudo sed -ie 's/^\(HOSTNAME\)=.*$/\1='$ELASTIC_HOSTNAME'/' /etc/hostname
+    else 
+	    echo "No hostname passed." 
+	    
+    fi 
+} 
+
+stop() { 
+	echo "Nothing to do here" 
+}
+
+restart() {
+	stop 
+	start 
+} 
+
+
+# See how we were called. 
+case "$1" in 
+    start) 
+        start 
+	;; 
+    stop) 
+        stop 
+	;; 
+    restart) 
+        restart 
+	;; 
+     *) 
+        echo $"Usage: $0 {start|stop|restart}" 
+        exit 1 
+esac 
+
+exit $?
+
