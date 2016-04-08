@@ -1,0 +1,48 @@
+
+
+**Policy Name:** parkmycloud-with-tagging-and-elastic-ip
+
+**Policy Description:** Supports resource tag of "parkmycloud":"yes" and the ability to associate/dissociate elastic ip addresses
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": [
+                "ec2:StartInstances",
+                "ec2:StopInstances"
+            ],
+            "Condition": {
+                "StringEquals": {
+                    "ec2:ResourceTag/parkmycloud": "yes"
+                }
+            },
+            "Resource": [
+                "arn:aws:ec2:*:*:instance/*"
+            ],
+            "Effect": "Allow"
+        },
+        {
+            "Action": [
+                "iam:GetUser",
+                "ec2:Describe*",
+                "ec2:AssociateAddress",
+                "ec2:DisassociateAddress"
+            ],
+            "Resource": [
+                "*"
+            ],
+            "Effect": "Allow"
+        }
+    ]
+}
+
+
+This policy is very similar, but leverages a special tag "parkmycloud":"yes" to grant permissions to park instances. (Of course you can substititute any tag key:value pair you prefer, instead.) If the instance does not have the specified tag, then the user will NOT be allowed to park the instance. It also grants permission to associate and disassociate elastic IP addresses.
+
+
+NOTE: Your acount number is the 12-digit number found in the User ARN string. For example:
+
+User ARN: arn:aws:iam::0123456789012:user/ernie
+
+The account number would be 0123456789012
