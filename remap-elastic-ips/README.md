@@ -21,7 +21,7 @@ There are a number of approaches that can be taken to workaround this problem.
 2. One could use a DevOps tool like Jenkins, Chef, Puppet or Saltstack to do these assignments, based upon a configuration management database. Those are great and capable tools.
 
 
-3. Once could use a simple approach leveraging the **EC2 API Tools** and instance **userData** to do it. 
+3. One could use a simple approach leveraging the **EC2 API Tools** and instance **userData** to do it. 
 
 
 What is shown here is this last approach for **Ubuntu** servers only at this time.
