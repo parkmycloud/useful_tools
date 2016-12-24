@@ -13,23 +13,22 @@ fi
 
 # Use separate log file for each important step.
 
-AzureCliInstallLog= "~/.Azure/AzureCliInstallLog"
-AzureLoginLog= "~/.Azure/PMCAzureLoginLog"
-AzureAccountLog= "~/.Azure/PMCAzureAccountLog"
-AzureAppLog= "~/.Azure/PMCAzureAppLog"
-AzureServicePrincipalLog= "~/.Azure/PMCAzureServicePrincipalLog"
-AzureRoleLog= "~/.Azure/PMCAzureRoleLog"
-AzureRoleMapLog= "~/.Azure/PMCAzureRoleMapLog"
+AzureCliInstallLog=~/.Azure/AzureCliInstall.log
+AzureAccountLog=~/.Azure/PMCAzureAccount.log
+AzureAppLog=~/.Azure/PMCAzureApp.log
+AzureServicePrincipalLog=~/.Azure/PMCAzureServicePrincipal.log
+AzureRoleLog=~/.Azure/PMCAzureRole.log
+AzureRoleMapLog=~/.Azure/PMCAzureRoleMap.log
 
-AzureRolePermsFile= "~/.Azure/PMCExampleAzureRole.json"
+AzureRolePermsFile=~/.Azure/PMCExampleAzureRole.json
 
-# Install nodejs and npm if they aren't installedt
+# Install nodejs and npm if they aren't installed
 
 NodeStatus=`node -v 2>&1`
 
-if [[ $NodeStatus =~ .*program.* ]]; then
+if [[ $NodeStatus =~ .*command* ]]; then
     echo "Installing nodejs and npm"
-    curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash - > $AzureCliInstallLog 2>&1
+    curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash - >> $AzureCliInstallLog 2>&1
     sudo apt-get install -y nodejs >> $AzureCliInstallLog 2>&1
     echo
 fi
@@ -56,23 +55,14 @@ do
     read -p "Enter your Azure username : " Username
 done
 
-azure login -u $Username > $AzureLoginLog
+azure login -u $Username
+echo
 
 # Get subscription and tenant ID's
 azure account show > $AzureAccountLog
 
 SubscriptionID=`grep "ID" $AzureAccountLog | grep -v Tenant | awk -F: '{print $3}'`
 TenantID=`grep "Tenant ID" $AzureAccountLog | awk -F: '{print $3}'`
-
-# Prompt for App name. Can't be NULL
-echo "Need to create a ParkMyCloud application in your subscription."
-echo "Here's the catch: It must be unique. "
-echo
-
-while [ -z $AppName  ]; 
-do
-    read -p "What do you want to call it? (e.g., ParkMyCloud Azure Dev): " AppName
-done
 
 # Print out final values for user for ParkMyCloud cred
 #   Subscription ID

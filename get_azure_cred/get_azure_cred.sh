@@ -13,23 +13,22 @@ fi
 
 # Use separate log file for each important step.
 
-AzureCliInstallLog= "~/.Azure/AzureCliInstallLog"
-AzureLoginLog= "~/.Azure/PMCAzureLoginLog"
-AzureAccountLog= "~/.Azure/PMCAzureAccountLog"
-AzureAppLog= "~/.Azure/PMCAzureAppLog"
-AzureServicePrincipalLog= "~/.Azure/PMCAzureServicePrincipalLog"
-AzureRoleLog= "~/.Azure/PMCAzureRoleLog"
-AzureRoleMapLog= "~/.Azure/PMCAzureRoleMapLog"
+AzureCliInstallLog=~/.Azure/AzureCliInstallLog
+AzureAccountLog=~/.Azure/PMCAzureAccountLog
+AzureAppLog=~/.Azure/PMCAzureAppLog
+AzureServicePrincipalLog=~/.Azure/PMCAzureServicePrincipalLog
+AzureRoleLog=~/.Azure/PMCAzureRoleLog
+AzureRoleMapLog=~/.Azure/PMCAzureRoleMapLog
 
-AzureRolePermsFile= "~/.Azure/PMCExampleAzureRole.json"
+AzureRolePermsFile=~/.Azure/PMCExampleAzureRole.json
 
-# Install nodejs and npm if they aren't installedt
+# Install nodejs and npm if they aren't installed
 
 NodeStatus=`node -v 2>&1`
 
-if [[ $NodeStatus =~ .*program.* ]]; then
+if [[ $NodeStatus =~ .*command* ]]; then
     echo "Installing nodejs and npm"
-    curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash - > $AzureCliInstallLog 2>&1
+    curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash - >> $AzureCliInstallLog 2>&1
     sudo apt-get install -y nodejs >> $AzureCliInstallLog 2>&1
     echo
 fi
@@ -56,7 +55,7 @@ do
     read -p "Enter your Azure username : " Username
 done
 
-azure login -u $Username > $AzureLoginLog
+azure login -u $Username
 
 # Get subscription and tenant ID's
 azure account show > $AzureAccountLog
