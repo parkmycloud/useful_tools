@@ -68,9 +68,9 @@ TenantID=`grep "Tenant ID" $AzureAccountLog | awk -F: '{print $3}'`
 #   Subscription ID
 #   Tenant ID
 
-echo "Your subscription ID is $SubscriptionID."
+echo "Your subscription ID is $SubscriptionID"
 echo
-echo "Your Tenant ID is $TenantID."
+echo "Your Tenant ID is $TenantID"
 echo 
 echo "Enter these on the Azure credential page in ParkMyCloud."
 echo 

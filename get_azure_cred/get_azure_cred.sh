@@ -145,13 +145,13 @@ echo
 #   App ID (Client ID)
 #   App Access Key (Client Secret Key)
 
-echo "Your subscription ID is $SubscriptionID."
+echo "Your subscription ID is $SubscriptionID"
 echo
-echo "Your Tenant ID is $TenantID."
+echo "Your Tenant ID is $TenantID"
 echo 
-echo "Your App ID is $AppID."
+echo "Your App ID is $AppID"
 echo
-echo "Your API Access Key is $AppKey."
+echo "Your API Access Key is $AppKey"
 echo 
 echo "Enter these on the Azure credential page in ParkMyCloud."
 echo 
