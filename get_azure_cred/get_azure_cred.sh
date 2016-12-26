@@ -2,6 +2,14 @@
 # This script has been tested in 
 #   Ubuntu 14.04.5 LTS
 #   Ubuntu 16.04 LTS
+#
+# To properly execute this script the Azure user must have permissions in AD
+# - Create an app
+# - Create a service principal
+# - Create a role
+# - Map role to service princpal
+#
+# Reference: https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-group-authenticate-service-principal-cli
 
 
 # Initialize Parameters
@@ -60,8 +68,8 @@ azure login -u $Username
 # Get subscription and tenant ID's
 azure account show > $AzureAccountLog
 
-SubscriptionID=`grep "ID" $AzureAccountLog | grep -v Tenant | awk -F: '{print $3}'`
-TenantID=`grep "Tenant ID" $AzureAccountLog | awk -F: '{print $3}'`
+SubscriptionID=`grep "ID" $AzureAccountLog | grep -v Tenant | awk -F": " '{print $3}' | xargs`
+TenantID=`grep "Tenant ID" $AzureAccountLog | awk -F": " '{print $3}' | xargs`
 
 # Prompt for App name. Can't be NULL
 echo "Need to create a ParkMyCloud application in your subscription."
@@ -73,8 +81,16 @@ do
     read -p "What do you want to call it? (e.g., ParkMyCloud Azure Dev): " AppName
 done
 
+AzurePemFile=~/.Azure/$AppName.pem
 
 # Create App API Key
+
+openssl req -x509 -days 3650 -newkey rsa:2048 -out cert.pem -nodes -subj "/CN=$AppName" >>  /dev/null 2>&1
+cat ./privkey.pem cert.pem > $AzurePemFile
+rm -f ./privkey.pem cert.pem
+
+AzureCert=`awk '/BEGIN CERTIFICATE/,/END CERTIFICATE/' $AzurePemFile | grep -v BEGIN | grep -v END` 
+ThumbPrint=`openssl x509 -in "$AppName.pem" -fingerprint -noout | sed 's/SHA1 Fingerprint=//g'  | sed 's/://g'`
 
 AppKey= 
 
@@ -85,9 +101,11 @@ AppKey=
 # Can use --cred-value <cred-value>, but not sure what goes here? 
 # What the heck does "the value of the "asymmetric" credential type. It represents the base 64 encoded certificate" mean?
 
-azure ad app create -n $AppName -m "https://console.parkmycloud.com" -i "https://notused" --cert-value $APIKey --end-date "12/31/2299" > $AzureAppLog
+# Need proper enddate
+# azure ad app create -n "$AppName" -m "https://console.parkmycloud.com" -i "https://notused" --cert-value "$AzureCert" --end-date "12/31/2299" > $AzureAppLog
+azure ad app create -n "$AppName" -m "https://console.parkmycloud.com" -i "https://notused" --cert-value "$AzureCert" > $AzureAppLog
 
-AppID=`grep AppId $AzureAppLog | awk -F: '{print $3}'`
+AppID=`grep AppId $AzureAppLog | awk -F": " '{print $3}' | xargs`
 
 
 # Create Service Principal for App
@@ -96,18 +114,19 @@ azure ad sp create -a $AppID > $AzureServicePrincipalLog
 echo "Created service principal for application."
 echo 
 
-ServicePrincipalID=`grep Id $AzureServicePrincipalLog | awk -F: '{print $3}'`
+ServicePrincipalID=`grep Id $AzureServicePrincipalLog | awk -F": " '{print $3}' | xargs`
 
 
 # Create custom role with limited permissions
 # Generate permissions file
 
 echo "{" > $AzureRolePermsFile
-echo "    \"Name\": \"ParkMyCloud Limited Access\"," >> $AzureRolePermsFile
-echo "    \"Description\": \"ParkMyCloud Limited Access Role\"," >> $AzureRolePermsFile
+echo "    \"Name\": \"$AppName\"," >> $AzureRolePermsFile
+echo "    \"Description\": \"$AppName Role\"," >> $AzureRolePermsFile
 echo "    \"IsCustom\": \"True\"," >> $AzureRolePermsFile
 echo "    \"Actions\": [" >> $AzureRolePermsFile
 echo "        \"Microsoft.Compute/virtualMachines/read\"," >> $AzureRolePermsFile
+echo "        \"Microsoft.Compute/virtualMachines/*/read\"," >> $AzureRolePermsFile
 echo "        \"Microsoft.Compute/virtualMachines/*/read\"," >> $AzureRolePermsFile
 echo "        \"Microsoft.Compute/virtualMachines/start/action\"," >> $AzureRolePermsFile
 echo "        \"Microsoft.Compute/virtualMachines/deallocate/action\"," >> $AzureRolePermsFile
@@ -129,12 +148,15 @@ azure role create --inputfile $AzureRolePermsFile > $AzureRoleLog
 echo "Created limited access role for app."
 echo 
 
-RoleID=`grep Id $AzureRoleLog | awk -F: '{print $3}'`
+RoleID=`grep Id $AzureRoleLog | awk -F": " '{print $3}' | xargs`
+
+# Azure is S-L-O-W-W-W! Buy some time until it finishes generating the role before trying to assign it
+sleep 15
 
 
 # Assign role to application service principal
 
-azure role assignment create --objectId $ServicePrincipalID  --roleID $RoleID  --scope "/subscriptions/$SubscriptionID" > $AzureRoleMapLog
+azure role assignment create --objectId $ServicePrincipalID  --roleId $RoleID  --scope "/subscriptions/$SubscriptionID" > $AzureRoleMapLog
 
 echo "Role has been mapped to service principal for application."
 echo 
@@ -155,8 +177,4 @@ echo "Your API Access Key is $AppKey"
 echo 
 echo "Enter these on the Azure credential page in ParkMyCloud."
 echo 
-
-
-
-
 
