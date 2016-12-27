@@ -176,4 +176,7 @@ echo
 echo "If you want to login interactively with this service principal, enter the following from the CLI:"
 echo 
 echo "azure login -u $ServicePrincipalName --service-principal --tenant $TenantID"
+echo
+echo
+
 
