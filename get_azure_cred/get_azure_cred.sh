@@ -76,13 +76,13 @@ echo "Need to create a ParkMyCloud application in your subscription."
 echo "Here's the catch: It must be unique. "
 echo
 
-while [ -z $AppName ]; 
+while [ -z "$AppName" ]; 
 do
     read -p "What do you want to call it? (e.g., ParkMyCloud Azure Dev): " AppName
 done
 
 
-while [ -z $AppPwd ]; 
+while [ -z "$AppPwd" ]; 
 do
     echo "Enter password for your password: " 
     read -s AppPwd
@@ -91,8 +91,11 @@ done
 # Create App
 # Can have -p <password> and provide password, but never get the key back
 
+# If AppName is multiple words then replace whites spaces with "-"
+HTTPName=`echo "$AppName" | sed "s/ /-/g"`
+
 # Need proper enddate
-azure ad app create -n "$AppName" -m "https://console.parkmycloud.com" -i "https://$AppName-not-used" -p "$AppPwd" > $AzureAppLog
+azure ad app create -n "$AppName" -m "https://console.parkmycloud.com" -i "https://$HTTPName-not-used" -p "$AppPwd" > $AzureAppLog
 
 AppID=`grep AppId $AzureAppLog | awk -F": " '{print $3}' | xargs`
 
