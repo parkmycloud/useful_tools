@@ -17,7 +17,7 @@ This script will automatically perform the following actions:
 * Map the service principal to the limited permission role
 * Output the parameters you will need to enter into ParkMyCloud.
 
-**NOTE:** _You will need to have sufficient privileges within Azure to accomplish the above tasks.
+**NOTE:** _You will need to have sufficient privileges within Azure to accomplish the above tasks._
 
 
 ####Steps to Use:
@@ -32,23 +32,23 @@ This script will automatically perform the following actions:
 
 ####Artifacts:
 
-There is a hidden directory created called ~/.Azure which will store information about each step of the process:
+    There is a hidden directory created called ~/.Azure which will store information about each step of the process:
 
-cd ~/.Azure
-
-ls -al
-
-total 32
-
-drwxrwxr-x 2 ubuntu ubuntu 4096 Dec 27 08:08 ./
-drwxr-xr-x 8 ubuntu ubuntu 4096 Dec 28 21:50 ../
--rw-rw-r-- 1 ubuntu ubuntu  615 Dec 27 08:07 PMCAzureAccountLog
--rw-rw-r-- 1 ubuntu ubuntu  553 Dec 27 08:07 PMCAzureAppLog
--rw-rw-r-- 1 ubuntu ubuntu 1188 Dec 27 08:07 PMCAzureRoleLog
--rw-rw-r-- 1 ubuntu ubuntu  792 Dec 27 08:08 PMCAzureRoleMapLog
--rw-rw-r-- 1 ubuntu ubuntu  488 Dec 27 08:07 PMCAzureServicePrincipalLog
--rw-rw-r-- 1 ubuntu ubuntu  887 Dec 27 08:07 PMCExampleAzureRole.json
- 
+    cd ~/.Azure
+    
+    ls -al
+    
+    total 32
+    
+    drwxrwxr-x 2 ubuntu ubuntu 4096 Dec 27 08:08 ./
+    drwxr-xr-x 8 ubuntu ubuntu 4096 Dec 28 21:50 ../
+    -rw-rw-r-- 1 ubuntu ubuntu  615 Dec 27 08:07 PMCAzureAccountLog
+    -rw-rw-r-- 1 ubuntu ubuntu  553 Dec 27 08:07 PMCAzureAppLog
+    -rw-rw-r-- 1 ubuntu ubuntu 1188 Dec 27 08:07 PMCAzureRoleLog
+    -rw-rw-r-- 1 ubuntu ubuntu  792 Dec 27 08:08 PMCAzureRoleMapLog
+    -rw-rw-r-- 1 ubuntu ubuntu  488 Dec 27 08:07 PMCAzureServicePrincipalLog
+    -rw-rw-r-- 1 ubuntu ubuntu  887 Dec 27 08:07 PMCExampleAzureRole.json
+     
 
 ####Environment
 
