@@ -98,11 +98,13 @@ do
         read -s AppPwd2
     done
 
-    if [ "$AppPwd1"=="$AppPwd2 ];then
+    if [ "$AppPwd1" == "$AppPwd2" ];then
         AppPwd=$AppPwd1
     else
         echo "Your passwords do not match. Try again."
         echo
+        AppPwd1=""
+        AppPwd2=""
     fi
         
 done
