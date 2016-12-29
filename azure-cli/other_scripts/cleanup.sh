@@ -1,11 +1,12 @@
 #!/bin/bash
 
-AZUREDIR=$HOME/.Azure
+PMCAzure=$HOME/.PMCAzure
 
-AzureAppLog=$AZUREDIR/PMCAzureAppLog
-AzureServicePrincipalLog=$AZUREDIR/PMCAzureServicePrincipalLog
-AzureRoleLog=$AZUREDIR/PMCAzureRoleLog
+# Use separate log file for each important step.
 
+AzureAppLog=$PMCAzure/PMCAzureAppLog
+AzureServicePrincipalLog=$PMCAzure/PMCAzureServicePrincipalLog
+AzureRoleLog=$PMCAzure/PMCAzureRoleLog
 
 AppObjID=`grep ObjectId $AzureAppLog | awk -F": " '{print $3}' | xargs`
 ServicePrincipalID=`grep Id $AzureServicePrincipalLog | awk -F": " '{print $3}' | xargs`
@@ -16,4 +17,4 @@ azure role delete $RoleID
 azure ad sp delete $ServicePrincipalID
 azure ad app delete $AppObjID
 
- rm -rf $AZUREDIR
+rm -rf $AZUREDIR

@@ -15,20 +15,22 @@
 # Initialize Parameters
 # Create hidden directory for stuff if it doesn't exist
 
-if [ ! -d $HOME/.Azure ]; then
-    mkdir $HOME/.Azure
+PMCAzure=$HOME/.PMCAzure
+
+if [ ! -d $PMCAzure ]; then
+    mkdir $PMCAzure
 fi
 
 # Use separate log file for each important step.
 
-AzureCliInstallLog=$HOME/.Azure/AzureCliInstallLog
-AzureAccountLog=$HOME/.Azure/PMCAzureAccountLog
-AzureAppLog=$HOME/.Azure/PMCAzureAppLog
-AzureServicePrincipalLog=$HOME/.Azure/PMCAzureServicePrincipalLog
-AzureRoleLog=$HOME/.Azure/PMCAzureRoleLog
-AzureRoleMapLog=$HOME/.Azure/PMCAzureRoleMapLog
+AzureCliInstallLog=$PMCAzure/AzureCliInstallLog
+AzureAccountLog=$PMCAzure/PMCAzureAccountLog
+AzureAppLog=$PMCAzure/PMCAzureAppLog
+AzureServicePrincipalLog=$PMCAzure/PMCAzureServicePrincipalLog
+AzureRoleLog=$PMCAzure/PMCAzureRoleLog
+AzureRoleMapLog=$PMCAzure/PMCAzureRoleMapLog
 
-AzureRolePermsFile=$HOME/.Azure/PMCExampleAzureRole.json
+AzureRolePermsFile=$PMCAzure/PMCExampleAzureRole.json
 
 # Install nodejs and npm if they aren't installed
 
@@ -53,19 +55,31 @@ if [[ $AzureStatus =~ .*command.* ]]; then
 fi
 
 # Login to Azure
-# Prompt for username. Can't be NULL
+# Prompt for username. 
+# - Can't be NULL
+# - Trap failed login and prompt user to try again
 
-echo "Logging into Azure."
-echo
-
-while [ -z $Username ]; 
+while [ -z "$status" ];
 do
-    read -p "Enter your Azure username : " Username
+
+    echo "Logging into Azure."
+    echo
+
+    while [ -z $Username ]; 
+    do
+        read -p "Enter your Azure username : " Username
+    done
+
+    status=`azure login -u $Username | grep OK`
+    echo 
+
+    if [ -z "$status" ]; then
+       Username=""
+    fi
+
 done
 
-azure login -u $Username
-
-
+    
 # Get subscription and tenant ID's
 azure account show > $AzureAccountLog
 
@@ -129,7 +143,7 @@ echo "Created service principal for application."
 echo 
 
 ServicePrincipalID=`grep Id $AzureServicePrincipalLog | awk -F": " '{print $3}' | xargs`
-ServicePrincipalName=`grep  -A1 -P 'Names' ~/.Azure/PMCAzureServicePrincipalLog | awk -F: '{print $2}' | grep -v Names | xargs`
+ServicePrincipalName=`grep  -A1 -P 'Names' $AzureServicePrincipalLog | awk -F: '{print $2}' | grep -v Names | xargs`
 
 # Create custom role with limited permissions
 # Generate permissions file
