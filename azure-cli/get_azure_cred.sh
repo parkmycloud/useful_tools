@@ -83,7 +83,7 @@ do
 done
 
 # Determine which subscription
-echo "Here are the subscriptions associated with you account:"
+echo "Here are the subscriptions associated with your account:"
 echo
 cat $AzureLoginLog | awk -F" " '/subscription/ {print $4}'
 echo

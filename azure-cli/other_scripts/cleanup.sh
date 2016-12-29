@@ -22,4 +22,5 @@ azure role delete $RoleID --subscription $SubscriptionID
 azure ad sp delete $ServicePrincipalID
 azure ad app delete $AppObjID
 
-#rm -rf $PMCAzure
+rm -rf $PMCAzure
+
