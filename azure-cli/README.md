@@ -32,9 +32,9 @@ This script will automatically perform the following actions:
 
 ####Artifacts:
 
-    There is a hidden directory created called ~/.Azure which will store information about each step of the process:
+    There is a hidden directory created called ~/.PMCAzure which will store information about each step of the process:
 
-    cd ~/.Azure
+    cd ~/.PMCAzure
     
     ls -al
     

@@ -15,20 +15,23 @@
 # Initialize Parameters
 # Create hidden directory for stuff if it doesn't exist
 
-if [ ! -d $HOME/.Azure ]; then
-    mkdir $HOME/.Azure
+PMCAzure=$HOME/.PMCAzure
+
+if [ ! -d $PMCAzure ]; then
+    mkdir $PMCAzure
 fi
 
 # Use separate log file for each important step.
 
-AzureCliInstallLog=$HOME/.Azure/AzureCliInstallLog
-AzureAccountLog=$HOME/.Azure/PMCAzureAccountLog
-AzureAppLog=$HOME/.Azure/PMCAzureAppLog
-AzureServicePrincipalLog=$HOME/.Azure/PMCAzureServicePrincipalLog
-AzureRoleLog=$HOME/.Azure/PMCAzureRoleLog
-AzureRoleMapLog=$HOME/.Azure/PMCAzureRoleMapLog
+AzureCliInstallLog=$PMCAzure/AzureCliInstallLog
+AzureLoginLog=$PMCAzure/PMCAzureLoginLog
+AzureAccountLog=$PMCAzure/PMCAzureAccountLog
+AzureAppLog=$PMCAzure/PMCAzureAppLog
+AzureServicePrincipalLog=$PMCAzure/PMCAzureServicePrincipalLog
+AzureRoleLog=$PMCAzure/PMCAzureRoleLog
+AzureRoleMapLog=$PMCAzure/PMCAzureRoleMapLog
 
-AzureRolePermsFile=$HOME/.Azure/PMCExampleAzureRole.json
+AzureRolePermsFile=$PMCAzure/PMCExampleAzureRole.json
 
 # Install nodejs and npm if they aren't installed
 
@@ -53,20 +56,47 @@ if [[ $AzureStatus =~ .*command.* ]]; then
 fi
 
 # Login to Azure
-# Prompt for username. Can't be NULL
+# Prompt for username. 
+# - Can't be NULL
+# - Trap failed login and prompt user to try again
 
-echo "Logging into Azure."
-echo
-
-while [ -z $Username ]; 
+while [ -z "$status" ];
 do
-    read -p "Enter your Azure username : " Username
+
+    echo "Logging into Azure."
+    echo
+
+    while [ -z $Username ]; 
+    do
+        read -p "Enter your Azure username : " Username
+    done
+
+    azure login -u $Username > $AzureLoginLog
+    echo 
+
+    status=`grep OK $AzureLoginLog`
+
+    if [ -z "$status" ]; then
+       Username=""
+    fi
+
 done
 
-azure login -u $Username
+# Determine which subscription
+echo "Here are the subscriptions associated with your account:"
+echo
+cat $AzureLoginLog | awk -F" " '/subscription/ {print $4}'
+echo
 
+while [ -z $SubName ]; 
+do
+    read -p "Enter the subscription name you want to use: " SubName
+    echo
+done
+
+    
 # Get subscription and tenant ID's
-azure account show > $AzureAccountLog
+azure account show -s $SubName > $AzureAccountLog
 
 SubscriptionID=`grep "ID" $AzureAccountLog | grep -v Tenant | awk -F": " '{print $3}' | xargs`
 TenantID=`grep "Tenant ID" $AzureAccountLog | awk -F": " '{print $3}' | xargs`
@@ -81,12 +111,33 @@ do
     read -p "What do you want to call it? (e.g., ParkMyCloud Azure Dev): " AppName
 done
 
+# Prompt for application password
+while [ -z "$AppPwd" ];
+do 
 
-while [ -z "$AppPwd" ]; 
-do
-    echo "Enter password for your password: " 
-    read -s AppPwd
+    while [ -z "$AppPwd1" ]; 
+    do
+        echo "Enter password for your application: " 
+        read -s AppPwd1
+    done
+
+    while [ -z "$AppPwd2" ]; 
+    do
+        echo "Re-enter your password: " 
+        read -s AppPwd2
+    done
+
+    if [ "$AppPwd1" == "$AppPwd2" ];then
+        AppPwd=$AppPwd1
+    else
+        echo "Your passwords do not match. Try again."
+        echo
+        AppPwd1=""
+        AppPwd2=""
+    fi
+        
 done
+
 
 # Create App
 # Can have -p <password> and provide password, but never get the key back
@@ -103,11 +154,12 @@ AppID=`grep AppId $AzureAppLog | awk -F": " '{print $3}' | xargs`
 # Create Service Principal for App
 azure ad sp create -a $AppID > $AzureServicePrincipalLog
 
+echo
 echo "Created service principal for application."
 echo 
 
 ServicePrincipalID=`grep Id $AzureServicePrincipalLog | awk -F": " '{print $3}' | xargs`
-ServicePrincipalName=`grep  -A1 -P 'Names' ~/.Azure/PMCAzureServicePrincipalLog | awk -F: '{print $2}' | grep -v Names | xargs`
+ServicePrincipalName=`grep  -A1 -P 'Names' $AzureServicePrincipalLog | awk -F: '{print $2}' | grep -v Names | xargs`
 
 # Create custom role with limited permissions
 # Generate permissions file
@@ -119,9 +171,10 @@ echo "    \"IsCustom\": \"True\"," >> $AzureRolePermsFile
 echo "    \"Actions\": [" >> $AzureRolePermsFile
 echo "        \"Microsoft.Compute/virtualMachines/read\"," >> $AzureRolePermsFile
 echo "        \"Microsoft.Compute/virtualMachines/*/read\"," >> $AzureRolePermsFile
-echo "        \"Microsoft.Compute/virtualMachines/*/read\"," >> $AzureRolePermsFile
 echo "        \"Microsoft.Compute/virtualMachines/start/action\"," >> $AzureRolePermsFile
 echo "        \"Microsoft.Compute/virtualMachines/deallocate/action\"," >> $AzureRolePermsFile
+echo "        \"Microsoft.Network/networkInterfaces/read\"," >> $AzureRolePermsFile
+echo "        \"Microsoft.Network/publicIPAddresses/read\"," >> $AzureRolePermsFile
 echo "        \"Microsoft.Compute/virtualMachineScaleSets/read\"," >> $AzureRolePermsFile
 echo "        \"Microsoft.Compute/virtualMachineScaleSets/write\"," >> $AzureRolePermsFile
 echo "        \"Microsoft.Compute/virtualMachineScaleSets/start/action\"," >> $AzureRolePermsFile
@@ -146,7 +199,6 @@ RoleID=`grep Id $AzureRoleLog | awk -F": " '{print $3}' | xargs`
 while [ -z "$SP_Present" ];
 do
     SP_Present=`azure ad sp list | grep $ServicePrincipalID`
-    echo "$SP_Present"
     echo "Waiting on Service Principal to show up in AD"
     sleep 30
 done
@@ -165,13 +217,10 @@ echo
 #   App ID (Client ID)
 #   App API Access Key
 
-echo "Your subscription ID is $SubscriptionID"
-echo
-echo "Your Tenant ID is $TenantID"
-echo 
-echo "Your App ID is $AppID"
-echo
-echo "Your API Access Key is $AppPwd"
+echo "Subscription ID: $SubscriptionID"
+echo "      Tenant ID: $TenantID"
+echo "         App ID: $AppID"
+echo " API Access Key: $AppPwd"
 echo 
 echo "Enter these on the Azure credential page in ParkMyCloud."
 echo 
