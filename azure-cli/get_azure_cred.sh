@@ -24,6 +24,7 @@ fi
 # Use separate log file for each important step.
 
 AzureCliInstallLog=$PMCAzure/AzureCliInstallLog
+AzureLoginLog=$PMCAzure/PMCAzureLoginLog
 AzureAccountLog=$PMCAzure/PMCAzureAccountLog
 AzureAppLog=$PMCAzure/PMCAzureAppLog
 AzureServicePrincipalLog=$PMCAzure/PMCAzureServicePrincipalLog
@@ -70,8 +71,10 @@ do
         read -p "Enter your Azure username : " Username
     done
 
-    status=`azure login -u $Username | grep OK`
+    azure login -u $Username > $AzureLoginLog
     echo 
+
+    status=`grep OK $AzureLoginLog`
 
     if [ -z "$status" ]; then
        Username=""
@@ -79,9 +82,21 @@ do
 
 done
 
+# Determine which subscription
+echo "Here are the subscriptions associated with you account:"
+echo
+cat $AzureLoginLog | awk -F" " '/subscription/ {print $4}'
+echo
+
+while [ -z $SubName ]; 
+do
+    read -p "Enter the subscription name you want to use: " SubName
+    echo
+done
+
     
 # Get subscription and tenant ID's
-azure account show > $AzureAccountLog
+azure account show -s $SubName > $AzureAccountLog
 
 SubscriptionID=`grep "ID" $AzureAccountLog | grep -v Tenant | awk -F": " '{print $3}' | xargs`
 TenantID=`grep "Tenant ID" $AzureAccountLog | awk -F": " '{print $3}' | xargs`
@@ -139,6 +154,7 @@ AppID=`grep AppId $AzureAppLog | awk -F": " '{print $3}' | xargs`
 # Create Service Principal for App
 azure ad sp create -a $AppID > $AzureServicePrincipalLog
 
+echo
 echo "Created service principal for application."
 echo 
 
@@ -183,7 +199,6 @@ RoleID=`grep Id $AzureRoleLog | awk -F": " '{print $3}' | xargs`
 while [ -z "$SP_Present" ];
 do
     SP_Present=`azure ad sp list | grep $ServicePrincipalID`
-    echo "$SP_Present"
     echo "Waiting on Service Principal to show up in AD"
     sleep 30
 done
