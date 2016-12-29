@@ -17,4 +17,4 @@ azure role delete $RoleID
 azure ad sp delete $ServicePrincipalID
 azure ad app delete $AppObjID
 
-rm -rf $AZUREDIR
+rm -rf $PMCAzure
