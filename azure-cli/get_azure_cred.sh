@@ -65,6 +65,7 @@ done
 
 azure login -u $Username
 
+
 # Get subscription and tenant ID's
 azure account show > $AzureAccountLog
 
@@ -81,12 +82,31 @@ do
     read -p "What do you want to call it? (e.g., ParkMyCloud Azure Dev): " AppName
 done
 
+# Prompt for application password
+while [ -z "$AppPwd" ];
+do 
 
-while [ -z "$AppPwd" ]; 
-do
-    echo "Enter password for your password: " 
-    read -s AppPwd
+    while [ -z "$AppPwd1" ]; 
+    do
+        echo "Enter password for your application: " 
+        read -s AppPwd1
+    done
+
+    while [ -z "$AppPwd2" ]; 
+    do
+        echo "Re-enter your password: " 
+        read -s AppPwd2
+    done
+
+    if [ "$AppPwd1"=="$AppPwd2 ];then
+        AppPwd=$AppPwd1
+    else
+        echo "Your passwords do not match. Try again."
+        echo
+    fi
+        
 done
+
 
 # Create App
 # Can have -p <password> and provide password, but never get the key back
@@ -119,9 +139,10 @@ echo "    \"IsCustom\": \"True\"," >> $AzureRolePermsFile
 echo "    \"Actions\": [" >> $AzureRolePermsFile
 echo "        \"Microsoft.Compute/virtualMachines/read\"," >> $AzureRolePermsFile
 echo "        \"Microsoft.Compute/virtualMachines/*/read\"," >> $AzureRolePermsFile
-echo "        \"Microsoft.Compute/virtualMachines/*/read\"," >> $AzureRolePermsFile
 echo "        \"Microsoft.Compute/virtualMachines/start/action\"," >> $AzureRolePermsFile
 echo "        \"Microsoft.Compute/virtualMachines/deallocate/action\"," >> $AzureRolePermsFile
+echo "        \"Microsoft.Network/networkInterfaces/read\"," >> $AzureRolePermsFile
+echo "        \"Microsoft.Network/publicIPAddresses/read\"," >> $AzureRolePermsFile
 echo "        \"Microsoft.Compute/virtualMachineScaleSets/read\"," >> $AzureRolePermsFile
 echo "        \"Microsoft.Compute/virtualMachineScaleSets/write\"," >> $AzureRolePermsFile
 echo "        \"Microsoft.Compute/virtualMachineScaleSets/start/action\"," >> $AzureRolePermsFile
@@ -165,13 +186,10 @@ echo
 #   App ID (Client ID)
 #   App API Access Key
 
-echo "Your subscription ID is $SubscriptionID"
-echo
-echo "Your Tenant ID is $TenantID"
-echo 
-echo "Your App ID is $AppID"
-echo
-echo "Your API Access Key is $AppPwd"
+echo "Subscription ID: $SubscriptionID"
+echo "      Tenant ID: $TenantID"
+echo "         App ID: $AppID"
+echo " API Access Key: $AppPwd"
 echo 
 echo "Enter these on the Azure credential page in ParkMyCloud."
 echo 
