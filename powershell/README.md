@@ -37,19 +37,19 @@ This script will automatically perform the following actions:
 
     cd ~\.PMCAzure
     
-    ls -al
-    
-    total 32
-    
-    drwxrwxr-x 2 ubuntu ubuntu 4096 Dec 27 08:08 ./
-    drwxr-xr-x 8 ubuntu ubuntu 4096 Dec 28 21:50 ../
-    -rw-rw-r-- 1 ubuntu ubuntu  615 Dec 27 08:07 PMCAzureAccountLog
-    -rw-rw-r-- 1 ubuntu ubuntu  553 Dec 27 08:07 PMCAzureAppLog
-    -rw-rw-r-- 1 ubuntu ubuntu 1188 Dec 27 08:07 PMCAzureRoleLog
-    -rw-rw-r-- 1 ubuntu ubuntu  792 Dec 27 08:08 PMCAzureRoleMapLog
-    -rw-rw-r-- 1 ubuntu ubuntu  488 Dec 27 08:07 PMCAzureServicePrincipalLog
-    -rw-rw-r-- 1 ubuntu ubuntu  887 Dec 27 08:07 PMCExampleAzureRole.json
-     
+        Directory: C:\Users\<you>\.PMCAzure
+
+
+    Mode                LastWriteTime         Length Name                                                                       
+    ----                -------------         ------ ----                                                                       
+    -a----         1/5/2017   3:39 PM            374 PMCAzureAccountLog                                                         
+    -a----         1/5/2017   3:40 PM            894 PMCAzureAppLog                                                             
+    -a----         1/5/2017   3:39 PM            572 PMCAzureLoginLog                                                           
+    -a----         1/5/2017   3:40 PM           1018 PMCAzureRoleLog                                                            
+    -a----         1/5/2017   3:40 PM           1078 PMCAzureRoleMapLog                                                         
+    -a----         1/5/2017   3:40 PM            770 PMCAzureServicePrincipalLog                                                
+    -a----         1/5/2017   3:40 PM           1962 PMCExampleAzureRole.json                                                   
+ 
 
 ####Environment
 
