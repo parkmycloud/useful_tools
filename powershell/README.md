@@ -26,6 +26,7 @@ This script will automatically perform the following actions:
 * Create a directory to pull this repository to your Windows system (e.g., c:\users\<you>\git
 * Change to that directory:  cd ~/git
 * Clone the repository: https://github.com/parkmycloud/useful_tools.git (I suggest using Git-Desktop)
+* Set your branch to the latest version: (e.g., git branch v1.2)
 * Change to the appropriate directory: cd ~\git\useful_tools\powershell
 * Execute the script shown:  .\get_azure_cred.ps1
 * Follow the directions.
