@@ -140,13 +140,16 @@ done
 
 
 # Create App
-# Can have -p <password> and provide password, but never get the key back
 
-# If AppName is multiple words then replace whites spaces with "-"
+# Need proper enddate - effectively infinite
+EndDate="12/31/2299"
+
+HomePage="https://console.parkmycloud.com"
+IdentifierUris="https://$HTTPName-not-used"
+
 HTTPName=`echo "$AppName" | sed "s/ /-/g"`
 
-# Need proper enddate
-azure ad app create -n "$AppName" -m "https://console.parkmycloud.com" -i "https://$HTTPName-not-used" -p "$AppPwd" > $AzureAppLog
+azure ad app create -n "$AppName" -m "$HomePage" -i "$IdentifierUris" -p "$AppPwd" --end-date "$EndDate" > $AzureAppLog
 
 AppID=`grep AppId $AzureAppLog | awk -F": " '{print $3}' | xargs`
 
