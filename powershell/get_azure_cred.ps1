@@ -48,7 +48,7 @@ while (-NOT ($LoggedIn)) {
     echo "Logging into Azure."
     echo ""
 
-    $LoggedIn=Login-AzureRmAccount -ErrorAction:ContinueSilently
+    $LoggedIn=Login-AzureRmAccount -ErrorAction:SilentlyContinue
 
     # Record login information
     echo $LoggedIn > $AzureLoginLog
@@ -73,7 +73,7 @@ Get-Content .\tmp.txt | ForEach-Object{
 del .\tmp.txt
 echo ""
 
-while (-NOT ($SubName){
+while (-NOT ($SubName)) {
      $SubName=Read-Host "Enter the subscription name you want to use"
 }
     
@@ -141,7 +141,7 @@ $EndDate="12/31/2299"
 $HomePage="https://console.parkmycloud.com"
 $IdentifierUris="https://$HTTPName-not-used"
 
-New-AzureRmADApplication -Name $AppName -HomePage $HomePage -IdentifierUris $IdentifierUris -Password $AppPwd -EndDate $EndDate > $AzureAppLog
+New-AzureRmADApplication -DisplayName $AppName -HomePage $HomePage -IdentifierUris $IdentifierUris -Password $AppPwd -EndDate $EndDate > $AzureAppLog
 
 
 Get-Content $AzureAppLog | ForEach-Object {
