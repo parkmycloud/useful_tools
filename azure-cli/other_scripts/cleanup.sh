@@ -68,5 +68,10 @@ azure ad sp delete $ServicePrincipalID
 azure ad app delete $AppObjID
 
 # Cleanup ~/.PMCAzure
-rm -rf $PMCAzure
+
+read -p "Do you want to delete the files in $PMCAzure? [Y]es or [N]o: " DeleteEm
+
+if [ "$DeleteEM" = "Y" ] || [ "$DeleteEm" = "y" ] || [ "$DeleteEm" = "Yes" ] || [ "$DeleteEm" = "yes" ] || [ "$DeleteEm" = "YES" ]; then
+    rm -rf $PMCAzure
+fi
 
