@@ -144,10 +144,11 @@ done
 # Need proper enddate - effectively infinite
 EndDate="12/31/2299"
 
+HTTPName=`echo "$AppName" | sed "s/ /-/g"`
+
 HomePage="https://console.parkmycloud.com"
 IdentifierUris="https://$HTTPName-not-used"
 
-HTTPName=`echo "$AppName" | sed "s/ /-/g"`
 
 azure ad app create -n "$AppName" -m "$HomePage" -i "$IdentifierUris" -p "$AppPwd" --end-date "$EndDate" > $AzureAppLog
 
