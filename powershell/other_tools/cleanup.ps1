@@ -71,6 +71,10 @@ Get-Content $AzureRoleLog | ForEach-Object {
     }
 }
 
+# Set proper subscription
+Get-AzureRmSubscription -SubscriptionId $SubscriptionID
+
+
 # Remove role assignment
 Remove-AzureRmRoleAssignment -ObjectId $ServicePrincipalID -RoleDefinitionId $RoleID
 
