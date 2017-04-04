@@ -1,5 +1,5 @@
 
-**Policy Name:** parkmycloud-for-one-account-with-tagging
+**Policy Name:** parkmycloud-with-tagging
 
 **Policy Description:** Only resources with the tag "parkmycloud":"yes" will be given permission to be parked.
 
@@ -18,7 +18,7 @@
                 }
             },
             "Resource": [
-                "arn:aws:ec2:*:<Your Account Number Here>:instance/*"
+                "*"
             ],
             "Effect": "Allow"
         },
@@ -26,6 +26,8 @@
             "Action": [
                 "iam:GetUser",
                 "ec2:Describe*"
+                "autoscaling:Describe*",
+                "autoscaling:UpdateAutoScalingGroup"
             ],
             "Resource": [
                 "*"
@@ -38,9 +40,3 @@
 
 This policy is very similar, but leverages a special tag "parkmycloud":"yes" to grant permissions to park instances. (Of course you can substititute any tag key:value pair you prefer, instead.) If the instance does not have the specified tag, then the user will NOT be allowed to park the instance.
 
-
-NOTE: Your acount number is the 12-digit number found in the User ARN string. For example:
-
-User ARN: arn:aws:iam::0123456789012:user/ernie
-
-The account number would be 0123456789012
