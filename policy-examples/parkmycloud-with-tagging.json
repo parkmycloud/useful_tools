@@ -25,7 +25,7 @@
         {
             "Action": [
                 "iam:GetUser",
-                "ec2:Describe*"
+                "ec2:Describe*",
                 "autoscaling:Describe*",
                 "autoscaling:UpdateAutoScalingGroup"
             ],
