@@ -136,7 +136,7 @@ while (-NOT($AppPwd)){
 $HTTPName = $AppName | %{$_ -replace (' '),('-')}
 
 # Need proper enddate
-$EndDate="12-31-2299"
+$EndDate="2099-12-31 00:00:00Z"
 
 $HomePage="https://console.parkmycloud.com"
 $IdentifierUris="https://$HTTPName-not-used"
