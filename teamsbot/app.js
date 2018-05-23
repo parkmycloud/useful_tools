@@ -3,11 +3,11 @@ var builder = require('botbuilder');
 // Setup Restify Server 
 var server = restify.createServer(); 
 
-var MICROSOFT_APP_ID = '';
-var MICROSOFT_APP_PASSWORD = '';
-var PMC_USERNAME = '';
-var PMC_PASSWORD = '';
-var PMC_APP_ID = '';
+var MICROSOFT_APP_ID = process.env.MICROSOFT_APP_ID;
+var MICROSOFT_APP_PASSWORD = process.env.MICROSOFT_APP_ID;
+var PMC_USERNAME = process.env.PMC_USERNAME;
+var PMC_PASSWORD = process.env.PMC_PASSWORD;
+var PMC_APP_ID = process.env.PMC_APP_ID;
 
 const axios = require('axios');
 const instance = axios.create({
