@@ -1,0 +1,43 @@
+{
+    "$schema": "https://statics.teams.microsoft.com/sdk/v1.0/manifest/MicrosoftTeams.schema.json",
+    "manifestVersion": "1.0",
+    "version": "1.0.0",
+    "id": "00000000-0000-0000-0000-000000000000",
+    "packageName": "ParkMyCloudBot",
+    "developer": {
+        "name": "ParkMyCloud",
+        "websiteUrl": "https://www.microsoft.com",
+        "privacyUrl": "https://www.microsoft.com/privacy",
+        "termsOfUseUrl": "https://www.microsoft.com/termsofuse"
+    },
+    "name": {
+        "short": "ParkMyCloudBot",
+        "full": "ParkMyCloud App for Microsoft Teams"
+    },
+    "description": {
+        "short": "ParkMyCloud App for Microsoft Teams",
+        "full": "Adds a ParkMyCloud Bot."
+    },
+    "icons": {
+        "outline": "PMC-logo-cloud-only.jpg",
+        "color": "PMC-logo-cloud-only.jpg"
+    },
+    "bots": [{
+        "botId": "00000000-0000-0000-0000-000000000000",
+        "needsChannelSelector": false,
+        "isNotificationOnly": false,
+        "scopes": [
+            "team",
+            "personal"
+        ]
+    }],
+    "composeExtensions": [{
+        "botId": "00000000-0000-0000-0000-000000000000",
+        "scopes": [
+            "personal",
+            "team"
+        ]
+    }],
+    "permissions": [],
+    "validDomains": []
+}
