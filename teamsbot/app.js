@@ -81,7 +81,7 @@ function getSchedules(session) {
                 headers: {'Accept':'application/json', 'X-Auth-Token':response.data.token}
             })
                 .then(function(response){
-                    response.data.items.forEach(function(item){
+                    response.data.forEach(function(item){
                         session.send("%s - %s", item.id, item.name)
                     })
                 })
