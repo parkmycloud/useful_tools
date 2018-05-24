@@ -44,7 +44,7 @@ var bot = new builder.UniversalBot(connector, function (session) {
     }
     if (session.message.text.indexOf("detach") !=-1) { 
         var arr = session.message.text.split(" ");
-        attachSchedule(session, arr[1], "0");
+        attachSchedule(session, arr[1], null);
     }
 });
 
