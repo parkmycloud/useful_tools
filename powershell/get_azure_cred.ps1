@@ -34,8 +34,9 @@ $AzureRolePermsFile="$PMCAzure\PMCExampleAzureRole.json"
 
 # Install Azure Resource Manager and Azure modules if not already installed
 #
-# Nothing needed here. Installs automatically on invocation
 # Modules Required: AzureRM and Azure
+Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
+Install-Module -Name AzureRM -AllowClobber -Force
 
 
 # Login to Azure
