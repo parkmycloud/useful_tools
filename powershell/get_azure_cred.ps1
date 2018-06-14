@@ -181,18 +181,20 @@ echo "    ""Name"": ""$AppName""," >> $AzureRolePermsFile
 echo "    ""Description"": ""$AppName Role""," >> $AzureRolePermsFile
 echo "    ""IsCustom"": ""True""," >> $AzureRolePermsFile
 echo "    ""Actions"": [" >> $AzureRolePermsFile
-echo "        ""Microsoft.Compute/virtualMachines/read""," >> $AzureRolePermsFile
-echo "        ""Microsoft.Compute/virtualMachines/*/read""," >> $AzureRolePermsFile
+echo "        ""Microsoft.Compute/*/read""," >> $AzureRolePermsFile
 echo "        ""Microsoft.Compute/virtualMachines/start/action""," >> $AzureRolePermsFile
 echo "        ""Microsoft.Compute/virtualMachines/deallocate/action""," >> $AzureRolePermsFile
 echo "        ""Microsoft.Network/networkInterfaces/read""," >> $AzureRolePermsFile
 echo "        ""Microsoft.Network/publicIPAddresses/read""," >> $AzureRolePermsFile
-echo "        ""Microsoft.Compute/virtualMachineScaleSets/read""," >> $AzureRolePermsFile
 echo "        ""Microsoft.Compute/virtualMachineScaleSets/write""," >> $AzureRolePermsFile
 echo "        ""Microsoft.Compute/virtualMachineScaleSets/start/action""," >> $AzureRolePermsFile
 echo "        ""Microsoft.Compute/virtualMachineScaleSets/deallocate/action""," >> $AzureRolePermsFile
 echo "        ""Microsoft.Compute/virtualMachineScaleSets/*/read""," >> $AzureRolePermsFile
-echo "        ""Microsoft.Resources/subscriptions/resourceGroups/read""" >> $AzureRolePermsFile
+echo "        ""Microsoft.Commerce/*/read""," >> $AzureRolePermsFile
+echo "        ""Microsoft.Consumption/*/read""," >> $AzureRolePermsFile
+echo "        ""Microsoft.Insights/*/read""," >> $AzureRolePermsFile
+echo "        ""Microsoft.Insights/vAutoscaleSettings/Write""," >> $AzureRolePermsFile
+echo "        ""Microsoft.Resources/subscriptions/*/read""" >> $AzureRolePermsFile
 echo "    ]," >> $AzureRolePermsFile
 echo "    ""NotActions"": []," >> $AzureRolePermsFile
 echo "    ""AssignableScopes"": [" >> $AzureRolePermsFile
