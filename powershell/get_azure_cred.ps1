@@ -85,7 +85,7 @@ Get-Content $AzureAccountLog | ForEach-Object {
     $Left = $_.Split(':')[0]
     $Right = $_.Split(':')[1]
 
-    if ($Left -match "SubscriptionID"){
+    if ($Left -match "Id"){
         $SubscriptionID=$Right.Trim()
     }
 
