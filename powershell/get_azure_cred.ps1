@@ -66,7 +66,7 @@ Get-Content .\tmp.txt | ForEach-Object{
     $Left = $_.Split(':')[0]
     $Right = $_.Split(':')[1]
 
-    if ($Left -match "SubscriptionName") {
+    if ($Left -match "Name") {
         $Right
     }
 }
