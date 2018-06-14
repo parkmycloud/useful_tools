@@ -142,7 +142,8 @@ $EndDate="2099-12-31 00:00:00Z"
 $HomePage="https://console.parkmycloud.com"
 $IdentifierUris="https://$HTTPName-not-used"
 
-New-AzureRmADApplication -DisplayName $AppName -HomePage $HomePage -IdentifierUris $IdentifierUris -Password $AppPwd -EndDate $EndDate > $AzureAppLog
+$SecureStringPassword = ConvertTo-SecureString -String $AppPwd -AsPlainText -Force
+New-AzureRmADApplication -DisplayName $AppName -HomePage $HomePage -IdentifierUris $IdentifierUris -Password $SecureStringPassword -EndDate $EndDate > $AzureAppLog
 
 
 Get-Content $AzureAppLog | ForEach-Object {
