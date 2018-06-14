@@ -166,9 +166,9 @@ echo ""
 $ServicePrincipalName = $AppName
 
 Get-Content $AzureServicePrincipalLog | ForEach-Object {
-    if ( $_ -match "$AppName" ) {
+    if ( $_ -match "//$AppName" ) {
         $A = $_.Replace("$AppName","").Trim(" ") -split '\s+'
-	$ServicePrincipalID = $A[1].Trim(" ")
+	$ServicePrincipalID = $A[1].Trim(" ").Trim("{").Trim(",")
     }
 }
 
