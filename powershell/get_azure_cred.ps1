@@ -193,7 +193,7 @@ echo "        ""Microsoft.Compute/virtualMachineScaleSets/*/read""," >> $AzureRo
 echo "        ""Microsoft.Commerce/*/read""," >> $AzureRolePermsFile
 echo "        ""Microsoft.Consumption/*/read""," >> $AzureRolePermsFile
 echo "        ""Microsoft.Insights/*/read""," >> $AzureRolePermsFile
-echo "        ""Microsoft.Insights/vAutoscaleSettings/Write""," >> $AzureRolePermsFile
+echo "        ""Microsoft.Insights/AutoscaleSettings/Write""," >> $AzureRolePermsFile
 echo "        ""Microsoft.Resources/subscriptions/*/read""" >> $AzureRolePermsFile
 echo "    ]," >> $AzureRolePermsFile
 echo "    ""NotActions"": []," >> $AzureRolePermsFile
