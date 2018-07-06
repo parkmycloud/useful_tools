@@ -7,8 +7,8 @@ pmc_password = os.environ.get('PMC_PASSWORD')
 pmc_api = os.environ.get('PMC_API_TOKEN')
 base_url = "https://console.parkmycloud.com"
 
-# Define the instances you want snoozed
-snooze_these_instance_names = [
+# Define the instances you want to override
+override_these_instance_names = [
 	"instance1",
 	"instance2",
 	"instance3"
@@ -66,14 +66,14 @@ if __name__ == "__main__":
 	# 3. Find the instances you need and get their corresponding PMC IDs
 	item_ids = []
 	for item in resources_json['items']:
-		if item['name'] in snooze_these_instance_names:
-			print "Adding item to snooze list: "+str(item['name'])
+		if item['name'] in override_these_instance_names:
+			print "Adding item to override list: "+str(item['name'])
 			item_ids.append(int(item['id']))
 
 	# 4. Use that list of instance IDs to snooze the schedules (PUT to /resources/snooze)
 	hours = 2
 	snooze_response = pmc_snooze_schedule(auth_token, item_ids, hours)
 	if snooze_response.has_key('snooze_until'):
-		print "Items will snooze until "+str(snooze_response['snooze_until'])
+		print "Item schedules will override until "+str(snooze_response['snooze_until'])
 	else:
-		print "No items found for snooze"
+		print "No items found for override"
