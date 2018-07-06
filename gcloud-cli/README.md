@@ -1,5 +1,3 @@
-##gcp_bash_script.sh
-
 ####Purpose: 
 
 Automatically create limited role within GCP and output parameters for ParkMyCloud.  Full details of each step are available at https://parkmycloud.atlassian.net/wiki/spaces/PMCUG/pages/342163506/Create+Google+Cloud+Platform+GCP+Service+Account+-+Manually+Using+gcloud+CLI
