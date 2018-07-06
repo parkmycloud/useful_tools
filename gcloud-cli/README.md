@@ -1,9 +1,11 @@
-####Purpose: 
+## gcp_bash_script.sh
+
+#### Purpose: 
 
 Automatically create limited role within GCP and output parameters for ParkMyCloud.  Full details of each step are available at https://parkmycloud.atlassian.net/wiki/spaces/PMCUG/pages/342163506/Create+Google+Cloud+Platform+GCP+Service+Account+-+Manually+Using+gcloud+CLI
 
 
-####Description:
+#### Description:
 
 This script will automatically perform the following actions:
 
@@ -19,7 +21,7 @@ This script will automatically perform the following actions:
 **NOTE:** _You will need to have sufficient privileges within Google to accomplish the above tasks._
 
 
-####Steps to Use:
+#### Steps to Use:
 
 * Create a directory to pull this repository to your Linux system (e.g., /home/ubuntu/git).
 * Change to that directory:  cd ~/git
@@ -30,12 +32,12 @@ This script will automatically perform the following actions:
 * Follow the directions.
 
 
-####Environment
+#### Environment
 
 This script should work in any environment running bash, optimally with gcloud already installed.  Follow the instructions at https://cloud.google.com/sdk/ for installing gcloud ahead of time. 
 
 
-####Updates
+#### Updates
 
 These scripts are maintained only a best effort basis. If you wish to make changes or fix bugs, please fork the repository, make changes there and, once you have completed your testing, open up a pull request within Github.
 
