@@ -16,18 +16,19 @@ AzureVersion="none"
 # Use separate log file for each important step.
 
 PMCAzure=$HOME/.PMCAzure
-AzureCliInstallLog=$PMCAzure/AzureCliInstallLog
-AzureLoginLog=$PMCAzure/PMCAzureLoginLog
-AzureTenantLoginLog=$PMCAzure/PMCAzureTenantLoginLog
-AzureAccountLog=$PMCAzure/PMCAzureAccountLog
-AzureAccountDetailsLog=$PMCAzure/PMCAzureAccountDetailsLog
-AzureAppLog=$PMCAzure/PMCAzureAppLog
-AzureServicePrincipalLog=$PMCAzure/PMCAzureServicePrincipalLog
-AzureRoleLog=$PMCAzure/PMCAzureRoleLog
-AzureRoleMapLog=$PMCAzure/PMCAzureRoleMapLog
+AzureCliInstallLog=$PMCAzure/0.AzureCliInstallLog
+AzureLoginLog=$PMCAzure/1.PMCAzureLoginLog
+AzureAccountLog=$PMCAzure/2.PMCAzureAccountLog
+AzureAccountDetailsLog=$PMCAzure/3.PMCAzureAccountDetailsLog
+AzureTenantLoginLog=$PMCAzure/4.PMCAzureTenantLoginLog
+AzureAppLog=$PMCAzure/5.PMCAzureAppLog
+AzureServicePrincipalLog=$PMCAzure/6.PMCAzureServicePrincipalLog
+AzureRoleLog=$PMCAzure/7.PMCAzureRoleLog
+AzureRoleMapLog=$PMCAzure/8.PMCAzureRoleMapLog
 
 AzureRolePermsFile=$PMCAzure/PMCExampleAzureRole.json
 UserName=testuser@parkmycloud.com
+
 
 # check for whiptail
 haswhip=`which whiptail`
@@ -47,15 +48,15 @@ function fail_on_error() {
 if [ $theErr != 0 ]; then
 	echo
     if (( $# != 1 )); then
-        printf "%s\n" "error $theErr: Command failed"
+        printf "\n%s\n" "error $theErr: Command failed"
     else
-        printf "%s\n" "error $theErr: $1"
+        printf "\n%s\n" "error $theErr: $1"
     fi
 
 	if [ "$AzureVersion" != "none" ]; then
-#		$AzureCmd logout
-#		echo "Logged out of Azure CLI"
-echo "reinstate the logout on err!"
+		echo
+		$AzureCmd logout
+		echo "Logged out of Azure CLI"
 	fi
 
     exit 1
@@ -65,15 +66,17 @@ fi
 function whiptail_result() {
 if [ $? != 0 ]; then
     if (( $# != 1 )); then
+		echo
         echo "User cancelled script"
     else
+		echo
         echo "Error in whiptail processing"
     fi
 
 	if [ "$AzureVersion" != "none" ]; then
-#		$AzureCmd logout
-#		echo "Logged out of Azure CLI"
-echo "reinstate the logout on err!"
+		echo
+		$AzureCmd logout
+		echo "Logged out of Azure CLI"
 	fi
 
     exit 1
@@ -104,6 +107,9 @@ function jsonValue() {
 if [ ! -d $PMCAzure ]; then
     mkdir $PMCAzure
 	fail_on_error "Unable to create $PMCAzure folder - please check your permissions for the current working directory"
+else
+	# Clean up the temp fileis in case this is a repeat run
+	rm $PMCAzure/*
 fi
 
 # Install Azure CLI (if it doesn't exist already)
@@ -355,22 +361,21 @@ echo "About to create application service account in Azure using:"
 echo "  Display name:         $DisplayName"
 echo "  Home page:            $HomePage"
 echo "  Identifier URIs:      $IdentifierUris"
-#echo "  Application password: $CredPassword"
+#debug echo "  Application password: $CredPassword"
+#debug echo "About to run:"
+#debug echo "$AzureCmd ad app create --display-name $DisplayName --homepage $HomePage --identifier-uris $IdentifierUris --password $CredPassword --output tsv"
 $AzureCmd ad app create --display-name $DisplayName --homepage $HomePage --identifier-uris $IdentifierUris --password $CredPassword --output tsv > $AzureAppLog
+
 fail_on_error "Unable to create application service account. See $AzureAppLog"
 
-#AppID=(`cat $AzureAppLog | jsonValue appId 1`)
-#echo "Received AppID: $AppID"
-
-AppID=(`cat $AzureAppLog | cut -f2`)
+AppID=(`cat $AzureAppLog | cut -f3`)
 echo "Application service account created."
 echo "Received AppID: $AppID"
 echo
 echo -n "Creating Service Principal..."
 $AzureCmd ad sp create --id $AppID --output tsv > $AzureServicePrincipalLog
 fail_on_error "Unable to create Service Principal. See $AzureServicePrincipalLog"
-ServicePrincipalObjectID=(`cat $AzureServicePrincipalLog | cut -f5`)
-echo "ok"
+ServicePrincipalObjectID=(`cat $AzureServicePrincipalLog | cut -f16`)
 echo "Received Service Principal Object ID: $ServicePrincipalObjectID"
 
 echo -n "Waiting for Service Principal to show up in Azure AD..."
@@ -383,7 +388,7 @@ done
 echo "ok"
 
 echo
-echo "Downloading PMC Azure Policy Template"
+echo "Downloading ParkMyCloud Azure Policy Template"
 curl https://s3.amazonaws.com/parkmycloud-public/PMCAzureRecommendedPolicy.json -o $PMCAzure/PMCAzureRecommendedPolicy.json
 
 echo
@@ -396,7 +401,7 @@ for sub in ${SubsForPMC[@]}; do
 done
 
 # Create a sed script to perform the substitution of the subscriptions.
-# Yes, this could be done in one line, but it is ugly and painful to tweak
+# Yes, this could be done in one line, but it is ugly and painful to tweak/troubleshoot
 echo "/\"\/subscriptions\/<Your_subscription_ID_here>\"/ {" > $PMCAzure/script.sed
 echo " r $PMCAzure/PolicySubs" >>  $PMCAzure/script.sed
 echo " d" >>  $PMCAzure/script.sed
@@ -426,7 +431,7 @@ fail_on_error "Unable to create role definition.  See $AzureRoleLog"
 RoleDefinitionID=(`cat $AzureRoleLog | cut -f4`)
 echo "ok"
 #debug echo "See $AzureRoleLog"
-#debug echo "Using Role definition ID: $RoleDefinitionID"
+echo "Using Role definition ID: $RoleDefinitionID"
 
 echo
 echo "For each subscription, assigning custom role to service principal..."
@@ -446,10 +451,6 @@ done
 echo 
 
 # Print out final values for user for ParkMyCloud cred
-#   Subscription ID
-#   Tenant ID
-#   App ID (Client ID)
-#   App API Access Key
 echo "============================================================================"
 echo "Credential creation complete"
 echo "============================================================================"
@@ -473,7 +474,7 @@ done
 echo "The Cloud Credential Nickname can be tailored as desired, but must "
 echo "be unique within your ParkMyCloud account."
 echo
-echo "In order for the ParkMyCloud service to provide correct billing "
+echo "In order for the ParkMyCloud service to provide correct pricing "
 echo "information, you should provide the Azure Offer ID for your "
 echo "subscription.  This can be found in the Azure Console, under Cost "
 echo "Management + Billing, and then Subscriptions.  Select the Subscription "
@@ -483,6 +484,11 @@ echo "If you cannot find your Offer ID, ParkMyCloud will use a default "
 echo "value for now, and you can come back and add it later. Your pricing "
 echo "values may be incorrect until this is done."
 echo 
+echo "All of the credentials listed below use the Application:"
+echo "  Display name:         $DisplayName"
+echo "This can be seen in the Azure console at Azure Active Directory-->App"
+echo "Registrations, and select/search under the All Applications option"
+echo
 echo "============================================================================"
 
 #echo "If you want to login interactively with this service principal, enter the following from the CLI:"
