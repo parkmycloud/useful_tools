@@ -7,6 +7,8 @@
 # Removes Azure application, service principal, role and role map based on information in 
 # ~/.PMCAzure directory (greated by get_azure_cred.sh script)
 
+echo "This tool no longer works due to changes in the Azure CLI - please do not use."
+exit 1
 
 # Assumes you are logged into Azure
 while [ -z "$status" ];
