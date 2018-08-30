@@ -261,6 +261,8 @@ else
 	TenantID=${UniqueTenantIDs[0]}
 fi
 
+
+
 # is the user logged-in to the correct account for this tenant ID?
 if [ "$TenantID" != "$DefaultTenantID" ]; then
 	echo "Logging out of current Azure account, and logging back in to requested Tenant..."
@@ -278,6 +280,8 @@ if [ "$TenantID" != "$DefaultTenantID" ]; then
 		az_login --tenant $TenantID
 	fi
 fi
+
+#debug echo "You selected tenant ID: $TenantID"
 
 # Get the subscriptions for just the good tenant
 SubscriptionIDs=(`cat $AzureAccountLog | grep $TenantID | cut -f2`)
@@ -313,7 +317,7 @@ SubsForPMC=(${SubsForPMCList})
 
 #debug echo We will attempt to use subscriptions: ${SubsForPMC[*]}
 
-	while [ -z $DisplayName ]; do
+	while [ -z "$DisplayName" ]; do
 		DisplayName=$(whiptail --title "ParkMyCloud Application Display Name" \
 			--inputbox "Enter the Azure Console display name for the ParkMyCloud application" \
 			15 70 "ParkMyCloudAzureApp" \
@@ -363,8 +367,8 @@ echo "  Home page:            $HomePage"
 echo "  Identifier URIs:      $IdentifierUris"
 #debug echo "  Application password: $CredPassword"
 #debug echo "About to run:"
-#debug echo "$AzureCmd ad app create --display-name $DisplayName --homepage $HomePage --identifier-uris $IdentifierUris --password $CredPassword --output tsv"
-$AzureCmd ad app create --display-name $DisplayName --homepage $HomePage --identifier-uris $IdentifierUris --password $CredPassword --output tsv > $AzureAppLog
+#debug echo "$AzureCmd ad app create --display-name '$DisplayName' --homepage $HomePage --identifier-uris $IdentifierUris --password $CredPassword --output tsv"
+$AzureCmd ad app create --display-name "$DisplayName" --homepage $HomePage --identifier-uris $IdentifierUris --password $CredPassword --output tsv > $AzureAppLog
 
 fail_on_error "Unable to create application service account. See $AzureAppLog"
 
@@ -465,7 +469,7 @@ for sub in ${SubsForPMC[@]}; do
 	echo "  Cloud Credential Nickname: ${AccountNames[$sub]}"
 	echo "            Subscription ID: ${SubscriptionIDs[$sub]}"
 	echo "                   Offer ID: See the subscription details in Azure Console"
-	echo "                  Tenant ID: ${TenantIDs[$sub]}"
+	echo "                  Tenant ID: $TenantID"
 	echo "                     App ID: $AppID"
 	echo "             App Access Key: Password you created a moment ago"
 	echo 
