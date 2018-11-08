@@ -1,0 +1,90 @@
+{
+    "Version": "2012-10-17",
+    "Id":"ParkMyCloudRecommendedPolicyWithTaggingAsOf2018-11-08",
+    "Statement": [
+        {
+            "Sid": "DescribeResources",
+            "Action": [
+                "autoscaling:Describe*",
+                "ec2:Describe*",
+                "iam:GetUser",
+                "rds:DescribeDBInstances",
+                "rds:ListTagsForResource"
+            ],
+            "Resource": "*",
+            "Effect": "Allow"
+        },
+        {
+            "Sid": "ModifyEC2",
+            "Action": [
+                "ec2:ModifyInstanceAttribute"
+            ],
+            "Resource": "*",
+            "Effect": "Allow"
+        },
+        {
+            "Sid": "AllowTaggedEC2Only",
+            "Action": [
+                "ec2:StartInstances",
+                "ec2:StopInstances"
+            ],
+            "Condition": {
+                "StringEquals": {
+                    "ec2:ResourceTag/parkmycloud": "yes"
+                }
+            },
+            "Resource": "*",
+            "Effect": "Allow"
+        },
+        {
+            "Sid": "AllowTaggedASGOnly",
+            "Action": [
+                "autoscaling:UpdateAutoScalingGroup",
+                "autoscaling:SuspendProcesses",
+                "autoscaling:ResumeProcesses"
+            ],
+            "Condition": {
+                "StringEquals": {
+                    "autoscaling:ResourceTag/parkmycloud": "yes"
+                }
+            },
+            "Resource": "*",
+            "Effect": "Allow"
+        },
+        {
+            "Sid": "AllowTaggedRDSOnly",
+            "Action": [
+                "rds:ModifyDBInstance",
+                "rds:StartDBInstance",
+                "rds:StopDBInstance"
+            ],
+            "Condition": {
+                "StringEquals": {
+                    "rds:db-tag/parkmycloud": "yes"
+                }
+            },
+            "Resource": "*",
+            "Effect": "Allow"
+        },
+        {
+            "Sid": "AllowStartingInstancesWithEncryptedBoot",
+            "Effect": "Allow",
+            "Action": "kms:CreateGrant",
+            "Resource": "*"
+        },
+        {
+            "Sid": "CloudWatchMetricsAccess",
+            "Effect": "Allow",
+            "Action": [
+                "cloudwatch:GetMetricStatistics",
+                "cloudwatch:ListMetrics"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "Bool": {
+                    "aws:SecureTransport": "true"
+                }
+            }
+        }
+    ]
+}

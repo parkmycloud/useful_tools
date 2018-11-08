@@ -27,7 +27,7 @@ This script will automatically perform the following actions:
 * Change to that directory:  cd ~/git
 * Clone the repository: git clone https://github.com/parkmycloud/useful_tools.git
 * Set your branch to the latest tagged release: (e.g., git branch v1.2)
-* Change to the appropriate directory: cd ~/git/useful_tools/google-cli
+* Change to the appropriate directory: cd ~/git/useful_tools/GoogleCloudPlatform/google-cli
 * Execute the script shown:  ./gcp_bash_script.sh
 * Follow the directions.
 

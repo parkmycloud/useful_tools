@@ -1,0 +1,31 @@
+{
+    "Version": "2012-10-17",
+    "Id":"ParkMyCloudRecommendedSimplePolicyAsOf2018-11-08",
+    "Statement": [
+        {
+            "Action": [
+                "autoscaling:Describe*",
+                "autoscaling:UpdateAutoScalingGroup",
+                "autoscaling:SuspendProcesses",
+                "autoscaling:ResumeProcesses",
+                "cloudwatch:GetMetricStatistics",
+                "cloudwatch:ListMetrics",
+                "ec2:Describe*",
+                "ec2:ModifyInstanceAttribute",
+                "ec2:StartInstances",
+                "ec2:StopInstances",
+                "iam:GetUser",
+                "kms:CreateGrant",
+                "rds:DescribeDBInstances",
+                "rds:ListTagsForResource",
+                "rds:ModifyDBInstance",
+                "rds:StartDBInstance",
+                "rds:StopDBInstance"
+            ],
+            "Resource": [
+                "*"
+            ],
+            "Effect": "Allow"
+        }
+    ]
+}

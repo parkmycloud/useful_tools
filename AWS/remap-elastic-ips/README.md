@@ -58,7 +58,7 @@ Upload the ***install-remapper.sh*** and the ***remap-it.template*** files to th
 
 You will need to edit the installation script to add your ***IAM User credential*** (an access key and secret key). Within AWS this IAM user does not require much by way of permissions.  Here is a suggested simple policy:
 
-https://github.com/parkmycloud/useful_tools/blob/master/policy-examples/parkmycloud-with-tagging-and-elastic-ip.json
+https://github.com/parkmycloud/useful_tools/AWS/RecommendedPolicies/parkmycloud-recommended-policy-with-tagging.json
 
 
 #### Step 5 - Run the Installation Script
@@ -94,15 +94,5 @@ http://docs.aws.amazon.com/AWSEC2/latest/CommandLineReference/ec2-cli-managing-c
 ### You're Done!
 
 Every time the instance starts up it will assign the Elastic IP and hostname you specified in the userData to instance.
-
-
-I hope you find this simple solution to be useful!
-
-
-###Dale Wickizer
-
-CTO & Co-Founder, ParkMyCloud
-
-
 
 *Copyright 2016. ParkMyCloud, Inc. All rights reserved.*
