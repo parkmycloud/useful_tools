@@ -1,0 +1,49 @@
+{
+    "Version": "2012-10-17",
+    "Id": "ParkMyCloudRecommendedPolicyAsOf2018-11-08",
+    "Statement": [{
+            "Sid": "ParkMyCloudManagement",
+            "Action": [
+                "autoscaling:Describe*",
+                "autoscaling:UpdateAutoScalingGroup",
+                "autoscaling:SuspendProcesses",
+                "autoscaling:ResumeProcesses",
+                "ec2:Describe*",
+                "ec2:ModifyInstanceAttribute",
+                "ec2:StartInstances",
+                "ec2:StopInstances",
+                "iam:GetUser",
+                "rds:DescribeDBClusters",
+                "rds:DescribeDBInstances",
+                "rds:ListTagsForResource",
+                "rds:ModifyDBInstance",
+                "rds:StartDBCluster",
+                "rds:StartDBInstance",
+                "rds:StopDBCluster",
+                "rds:StopDBInstance"
+            ],
+            "Resource": "*",
+            "Effect": "Allow"
+        },
+        {
+            "Sid": "ParkMyCloudStartInstanceWithEncryptedBoot",
+            "Effect": "Allow",
+            "Action": "kms:CreateGrant",
+            "Resource": "*"
+        },
+        {
+            "Sid": "ParkMyCloudCloudWatchAccess",
+            "Effect": "Allow",
+            "Action": [
+                "cloudwatch:GetMetricStatistics",
+                "cloudwatch:ListMetrics"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "Bool": {
+                    "aws:SecureTransport": "true"
+                }
+            }
+        }
+    ]
+}
