@@ -16,10 +16,13 @@
                 "ec2:StopInstances",
                 "iam:GetUser",
                 "kms:CreateGrant",
+                "rds:DescribeDBClusters",
                 "rds:DescribeDBInstances",
                 "rds:ListTagsForResource",
                 "rds:ModifyDBInstance",
+                "rds:StartDBCluster",
                 "rds:StartDBInstance",
+                "rds:StopDBCluster",
                 "rds:StopDBInstance"
             ],
             "Resource": [
