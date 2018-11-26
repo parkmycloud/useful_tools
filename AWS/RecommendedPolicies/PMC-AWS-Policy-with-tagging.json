@@ -8,6 +8,7 @@
                 "autoscaling:Describe*",
                 "ec2:Describe*",
                 "iam:GetUser",
+                "rds:DescribeDBClusters",
                 "rds:DescribeDBInstances",
                 "rds:ListTagsForResource"
             ],
@@ -55,7 +56,9 @@
             "Sid": "AllowTaggedRDSOnly",
             "Action": [
                 "rds:ModifyDBInstance",
+                "rds:StartDBCluster",
                 "rds:StartDBInstance",
+                "rds:StopDBCluster",
                 "rds:StopDBInstance"
             ],
             "Condition": {
