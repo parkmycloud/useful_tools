@@ -26,8 +26,8 @@ Metadata:
 
 Parameters:
   PMCRoleName:
-    Description: Name of the ParkMyCloud IAM Role to create within your AWS account.
-                 Use only alphanumeric characters and/or the following +=,.@_-
+    Description: Name of the ParkMyCloud IAM Role to create within your AWS account. 
+      Use only alphanumeric characters and/or the following +=,.@_-
     Type: String
     Default: 'ParkMyCloud_Cross_Account_Access_CF'
   PMCAccountID:
@@ -71,13 +71,17 @@ Resources:
           - autoscaling:SuspendProcesses
           - autoscaling:ResumeProcesses
           - ec2:Describe*
+          - ec2:ModifyInstanceAttribute
           - ec2:StartInstances
           - ec2:StopInstances
           - iam:GetUser
+          - rds:DescribeDBClusters
           - rds:DescribeDBInstances
-          - rds:DescribeReservedDB*
           - rds:ListTagsForResource
+          - rds:ModifyDBInstance
+          - rds:StartDBCluster
           - rds:StartDBInstance
+          - rds:StopDBCluster
           - rds:StopDBInstance
           Effect: Allow
           Resource: '*'
