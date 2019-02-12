@@ -108,7 +108,7 @@ if [ ! -d $PMCAzure ]; then
     mkdir $PMCAzure
 	fail_on_error "Unable to create $PMCAzure folder - please check your permissions for the current working directory"
 else
-	# Clean up the temp fileis in case this is a repeat run
+	# Clean up the temp files in case this is a repeat run
 	rm $PMCAzure/*
 fi
 
@@ -172,37 +172,22 @@ function az_login() {
 	# az_login_status is set in the check_az_login function
 while [ -z "$az_login_status" ]; do
 
-	if (whiptail --title "MFA Enabled?" \
-		--defaultno \
-		--yesno "Does your account require multi-factor login?" 15 70 \
+	if (whiptail --title "Browser available?" \
+		--yesno "The Azure CLI uses a web browser to securely authenticate with Azure. Does this computer have a web browser? If not, we can use a different method to login." 15 70 \
 		3>&1 1>&2 2>&3) then
 		MFAEnabled="yes"
-		whiptail --title "Using MFA Login" \
-			--msgbox "We will now go back to the console, and you will need to follow the instructions for an interactive login using a web browser." \
+		whiptail --title "Using secure browser login" \
+			--msgbox "We will now open a web browser window for the Azure CLI login. The script will continue when you have logged in." \
 			15 70
-		echo "For MFA login, we will need to use an interactive login using a web browser."
+		echo "Requesting Azure CLI login with web browser."
 		$AzureCmd login $1 > $AzureLoginLog
+		fail_on_error "Login failed"
 	else
-		while [ -z $Username ]; do
-	        #read -p "Enter your Azure Administrator username : " Username
-			Username=$(whiptail --title "Azure Username" \
-				--inputbox "Enter your Azure username" 15 70 "" \
-				3>&1 1>&2 2>&3)
-			whiptail_result
-		done
-
-	    while [ -z $AzurePassword ]; do
-			AzurePassword=$(whiptail --title "Azure Password" \
-				--passwordbox "Enter your Azure password" 15 70 "" \
-				3>&1 1>&2 2>&3)
-			whiptail_result
-		done
-		# this no workie
-		#TERM=ansi whiptail --title "Logging in..." \
-		#	--infobox "Please stand by while we log in to Azure..." \
-		#	15 70 
-		echo "Please stand by - logging in to Azure..."
-		$AzureCmd login -u $Username -p $AzurePassword $1 > $AzureLoginLog
+		whiptail --title "Using headless login" \
+			--msgbox "We will now use the Azure CLI login option for headless systems. Follow the instructions on the command line that will appear in a moment. The script will continue when you have completed the login process using a browser on another computer." \
+			15 70
+		echo "Requesting Azure CLI login with web browser on another system."
+		$AzureCmd login $1 --use-device-code > $AzureLoginLog
 		fail_on_error "Login failed"
 	fi
 
@@ -379,14 +364,14 @@ echo
 echo -n "Creating Service Principal..."
 $AzureCmd ad sp create --id $AppID --output tsv > $AzureServicePrincipalLog
 fail_on_error "Unable to create Service Principal. See $AzureServicePrincipalLog"
-ServicePrincipalObjectID=(`cat $AzureServicePrincipalLog | cut -f16`)
+ServicePrincipalObjectID=(`cat $AzureServicePrincipalLog | cut -f17`)
 echo "Received Service Principal Object ID: $ServicePrincipalObjectID"
 
 echo -n "Waiting for Service Principal to show up in Azure AD..."
 while [ -z "$SP_Present" ];
 do
 	echo -n "."
-    SP_Present=`$AzureCmd ad sp list | grep $ServicePrincipalObjectID`
+    SP_Present=`$AzureCmd ad sp list --all | grep $ServicePrincipalObjectID`
     sleep 1
 done
 echo "ok"
@@ -443,7 +428,7 @@ rm -f $AzureRoleMapLog
 touch $AzureRoleMapLog
 for sub in ${SubsForPMC[@]}; do
 	echo -n "Assigning role to subscription: ${SubscriptionIDs[$sub]}..."
-	#debug echo "Using cmd: $AzureCmd role assignment create --scope /subscriptions/$sub --assignee-object-id $ServicePrincipalObjectID --role \"$RoleDefinitionID\""
+	#debug echo "Using cmd: $AzureCmd role assignment create --scope /subscriptions/${SubscriptionIDs[$sub]} --assignee-object-id $ServicePrincipalObjectID --role \"$RoleDefinitionID\""
 	echo "Assigning role to subscription: ${SubscriptionIDs[$sub]}" >> $AzureRoleMapLog
 	$AzureCmd role assignment create --scope /subscriptions/${SubscriptionIDs[$sub]} \
 		--assignee-object-id $ServicePrincipalObjectID \
