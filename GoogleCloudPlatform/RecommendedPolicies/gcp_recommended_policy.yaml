@@ -1,0 +1,29 @@
+title: ParkMyCloud Limited Access Service Role
+description: "Updated 2018-10-10. This role provides the essential permissions for the ParkMyCloud Service to manage your GCP Cloud. Includes selected permissions from roles/compute.instanceAdmin.v1 and roles/monitoring.viewer."
+stage: "GA"
+includedPermissions:
+- cloudsql.instances.get
+- cloudsql.instances.list
+- cloudsql.instances.update
+- compute.autoscalers.get
+- compute.autoscalers.list
+- compute.autoscalers.update
+- compute.instances.start
+- compute.instances.startWithEncryptionKey
+- compute.instances.stop
+- compute.instances.get
+- compute.instances.list
+- compute.instanceGroupManagers.get
+- compute.instanceGroupManagers.list
+- compute.instanceGroupManagers.update
+- compute.instanceGroupManagers.use
+- compute.zones.get
+- compute.zones.list
+- monitoring.groups.get
+- monitoring.groups.list
+- monitoring.metricDescriptors.get
+- monitoring.metricDescriptors.list
+- monitoring.monitoredResourceDescriptors.get
+- monitoring.monitoredResourceDescriptors.list
+- monitoring.timeSeries.list
+- resourcemanager.projects.get

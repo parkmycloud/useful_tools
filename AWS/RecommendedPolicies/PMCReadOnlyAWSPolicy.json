@@ -1,0 +1,32 @@
+{
+    "Version": "2012-10-17",
+    "Id": "ParkMyCloudReadOnlyAsOf2018-11-20",
+    "Statement": [{
+            "Sid": "ParkMyCloudManagement",
+            "Action": [
+                "autoscaling:Describe*",
+                "ec2:Describe*",
+                "iam:GetUser",
+                "rds:DescribeDBClusters",
+                "rds:DescribeDBInstances",
+                "rds:ListTagsForResource"
+            ],
+            "Resource": "*",
+            "Effect": "Allow"
+        },
+        {
+            "Sid": "ParkMyCloudCloudWatchAccess",
+            "Effect": "Allow",
+            "Action": [
+                "cloudwatch:GetMetricStatistics",
+                "cloudwatch:ListMetrics"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "Bool": {
+                    "aws:SecureTransport": "true"
+                }
+            }
+        }
+    ]
+}
