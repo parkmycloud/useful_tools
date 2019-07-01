@@ -3,7 +3,7 @@
 
 ### Purpose
 
-ParkMyCloud is SaaS application which allows users to schedule on/off times for their non-production EC2 instances, without having to do scripting. For more details on the application and company, you can go here [http://www.parkmycloud.com].
+ParkMyCloud is SaaS application which allows users to schedule on/off times for their non-production cloud resources, without having to do scripting. For more details on the application and company, you can go here [http://www.parkmycloud.com].
 
 The purpose of this bot is to allow users to interact with the ParkMyCloud API through chat commands in Slack.
 
