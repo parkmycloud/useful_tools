@@ -9,7 +9,7 @@
   "author": "cparlette@parkmycloud.com",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.18.1",
     "botbuilder": "^4.1.6",
     "restify": "^7.2.3"
   }
