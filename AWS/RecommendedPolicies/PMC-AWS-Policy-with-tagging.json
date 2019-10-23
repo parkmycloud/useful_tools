@@ -1,6 +1,6 @@
 {
     "Version": "2012-10-17",
-    "Id":"ParkMyCloudRecommendedPolicyWithTaggingAsOf2018-11-20",
+    "Id":"ParkMyCloudRecommendedPolicyWithTaggingAsOf2019-10-23",
     "Statement": [
         {
             "Sid": "DescribeResources",
@@ -8,8 +8,7 @@
                 "autoscaling:Describe*",
                 "ec2:Describe*",
                 "iam:GetUser",
-                "rds:DescribeDBClusters",
-                "rds:DescribeDBInstances",
+                "rds:Describe*",
                 "rds:ListTagsForResource"
             ],
             "Resource": "*",

@@ -30,33 +30,49 @@ resource "aws_iam_role_policy" "ParkMyCloud_policy" {
   policy = <<EOF
 {
   "Version": "2012-10-17",
-  "Statement": [
+  "Id": "ParkMyCloudRecommendedPolicyAsOf2019-10-23",
+  "Statement": [{
+        "Sid": "ParkMyCloudManagement",
+        "Action": [
+            "autoscaling:Describe*",
+            "autoscaling:ResumeProcesses",
+            "autoscaling:SuspendProcesses",
+            "autoscaling:UpdateAutoScalingGroup",
+            "ec2:Describe*",
+            "ec2:ModifyInstanceAttribute",
+            "ec2:StartInstances",
+            "ec2:StopInstances",
+            "iam:GetUser",
+            "rds:Describe*",
+            "rds:ListTagsForResource",
+            "rds:ModifyDBInstance",
+            "rds:StartDBCluster",
+            "rds:StartDBInstance",
+            "rds:StopDBCluster",
+            "rds:StopDBInstance"
+        ],
+        "Resource": "*",
+        "Effect": "Allow"
+    },
     {
-      "Action": [
-        "iam:GetUser",
-        "ec2:Describe*",
-        "ec2:StartInstances",
-        "ec2:StopInstances",
-        "autoscaling:Describe*",
-        "autoscaling:UpdateAutoScalingGroup",
-        "autoscaling:SuspendProcesses",
-        "autoscaling:ResumeProcesses",
-        "rds:DescribeDBInstances",
-        "rds:ListTagsForResource",
-        "rds:StartDBInstance",
-        "rds:StopDBInstance",
-        "cloudwatch:GetMetricStatistics",
-        "cloudwatch:ListMetrics",
-        "logs:DescribeLogGroups",
-        "logs:DescribeLogStreams",
-        "logs:GetLogEvents",
-        "logs:TestMetricFilter",
-        "logs:FilterLogEvents"
-      ],
-      "Resource": [
-        "*"
-      ],
-      "Effect": "Allow"
+        "Sid": "ParkMyCloudStartInstanceWithEncryptedBoot",
+        "Effect": "Allow",
+        "Action": "kms:CreateGrant",
+        "Resource": "*"
+    },
+    {
+        "Sid": "ParkMyCloudCloudWatchAccess",
+        "Effect": "Allow",
+        "Action": [
+            "cloudwatch:GetMetricStatistics",
+            "cloudwatch:ListMetrics"
+        ],
+        "Resource": "*",
+        "Condition": {
+            "Bool": {
+                "aws:SecureTransport": "true"
+            }
+        }
     }
   ]
 }
