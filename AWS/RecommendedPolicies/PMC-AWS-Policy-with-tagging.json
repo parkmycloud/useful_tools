@@ -55,14 +55,26 @@
             "Sid": "AllowTaggedRDSOnly",
             "Action": [
                 "rds:ModifyDBInstance",
-                "rds:StartDBCluster",
                 "rds:StartDBInstance",
-                "rds:StopDBCluster",
                 "rds:StopDBInstance"
             ],
             "Condition": {
                 "StringEquals": {
                     "rds:db-tag/parkmycloud": "yes"
+                }
+            },
+            "Resource": "*",
+            "Effect": "Allow"
+        },
+        {
+            "Sid": "AllowTaggedRDSAuroraOnly",
+            "Action": [
+                "rds:StartDBCluster",
+                "rds:StopDBCluster"
+            ],
+            "Condition": {
+                "StringEquals": {
+                    "rds:cluster-tag/parkmycloud": "yes"
                 }
             },
             "Resource": "*",
