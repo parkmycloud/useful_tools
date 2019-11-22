@@ -5,6 +5,7 @@ Description: Creates a stack to deploy the IAM Role needed to manage
   your AWS resources with ParkMyCloud. Grants the minimum essential
   permissions needed for proper ParkMyCloud operations. See 
   https://parkmycloud.atlassian.net/wiki/x/BYCMAg for more information.
+  Updated with latest recommend IAM Role Policy 2019-11-22.
 
 Metadata:
   AWS::CloudFormation::Interface:
@@ -67,9 +68,9 @@ Resources:
         Statement:
         - Action:
           - autoscaling:Describe*
-          - autoscaling:UpdateAutoScalingGroup
-          - autoscaling:SuspendProcesses
           - autoscaling:ResumeProcesses
+          - autoscaling:SuspendProcesses
+          - autoscaling:UpdateAutoScalingGroup
           - ec2:Describe*
           - ec2:ModifyInstanceAttribute
           - ec2:StartInstances
