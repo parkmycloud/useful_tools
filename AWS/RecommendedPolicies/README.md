@@ -15,3 +15,7 @@ Same permissions as the base recommended policy, but requires a tag on certain r
 ## PMC-AWS-Policy-simple.json
 
 Most of the core functionality of the recommended policy, but laid out in the simplest fashion possible.
+
+## PMC-AWS-Policy-read-only.json
+
+Policy that does not allow ParkMyCloud to modify any part of your environment.
