@@ -3,6 +3,8 @@
     "Description": "ParkMyCloud limited access",
     "IsCustom": "true",
     "Actions": [
+        "Microsoft.Capacity/reservationOrders/*/read",
+        "Microsoft.Commerce/*/read",
         "Microsoft.Compute/*/read",
         "Microsoft.Compute/virtualMachines/start/action",
         "Microsoft.Compute/virtualMachines/deallocate/action",
@@ -10,13 +12,12 @@
         "Microsoft.Compute/virtualMachineScaleSets/write",
         "Microsoft.Compute/virtualMachineScaleSets/start/action",
         "Microsoft.Compute/virtualMachineScaleSets/deallocate/action",
-        "Microsoft.Network/networkInterfaces/read",
-        "Microsoft.Network/publicIPAddresses/read",
-        "Microsoft.Resources/subscriptions/*/read",
-        "Microsoft.Commerce/*/read",
         "Microsoft.Consumption/*/read",
         "Microsoft.Insights/*/read",
-        "Microsoft.Insights/AutoscaleSettings/Write"
+        "Microsoft.Insights/AutoscaleSettings/Write",
+        "Microsoft.Network/networkInterfaces/read",
+        "Microsoft.Network/publicIPAddresses/read",
+        "Microsoft.Resources/subscriptions/*/read"
     ],
     "NotActions": [],
     "AssignableScopes": [
