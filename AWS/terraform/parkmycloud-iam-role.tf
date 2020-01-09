@@ -49,7 +49,8 @@ resource "aws_iam_role_policy" "ParkMyCloud_policy" {
             "rds:StartDBCluster",
             "rds:StartDBInstance",
             "rds:StopDBCluster",
-            "rds:StopDBInstance"
+            "rds:StopDBInstance",
+            "savingsplans:Describe*"
         ],
         "Resource": "*",
         "Effect": "Allow"

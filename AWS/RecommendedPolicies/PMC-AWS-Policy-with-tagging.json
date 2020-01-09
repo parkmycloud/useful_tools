@@ -1,6 +1,6 @@
 {
     "Version": "2012-10-17",
-    "Id":"ParkMyCloudRecommendedPolicyWithTaggingAsOf2019-10-23",
+    "Id":"ParkMyCloudRecommendedPolicyWithTaggingAsOf2020-01-05",
     "Statement": [
         {
             "Sid": "DescribeResources",
@@ -9,7 +9,8 @@
                 "ec2:Describe*",
                 "iam:GetUser",
                 "rds:Describe*",
-                "rds:ListTagsForResource"
+                "rds:ListTagsForResource",
+                "savingsplans:Describe*"
             ],
             "Resource": "*",
             "Effect": "Allow"

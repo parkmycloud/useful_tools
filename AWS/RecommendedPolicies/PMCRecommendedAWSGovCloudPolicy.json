@@ -1,6 +1,6 @@
 {
     "Version": "2012-10-17",
-    "Id": "ParkMyCloudRecommendedPolicyAsOf2020-01-05",
+    "Id": "ParkMyCloudRecommendedPolicyAsOf2019-10-23",
     "Statement": [{
             "Sid": "ParkMyCloudManagement",
             "Action": [
@@ -19,8 +19,7 @@
                 "rds:StartDBCluster",
                 "rds:StartDBInstance",
                 "rds:StopDBCluster",
-                "rds:StopDBInstance",
-                "savingsplans:Describe*"
+                "rds:StopDBInstance"
             ],
             "Resource": "*",
             "Effect": "Allow"

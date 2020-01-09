@@ -82,7 +82,8 @@ Resources:
           - rds:StartDBCluster
           - rds:StartDBInstance
           - rds:StopDBCluster
-          - rds:StopDBInstance
+          - rds:StopDBInstance,
+          - savingsplans:Describe*
           Effect: Allow
           Resource: '*'
         - Action:

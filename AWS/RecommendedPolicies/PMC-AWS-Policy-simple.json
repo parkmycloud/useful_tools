@@ -1,6 +1,6 @@
 {
     "Version": "2012-10-17",
-    "Id":"ParkMyCloudRecommendedSimplePolicyAsOf2019-10-23",
+    "Id":"ParkMyCloudRecommendedSimplePolicyAsOf2020-01-05",
     "Statement": [
         {
             "Action": [
@@ -22,7 +22,8 @@
                 "rds:StartDBCluster",
                 "rds:StartDBInstance",
                 "rds:StopDBCluster",
-                "rds:StopDBInstance"
+                "rds:StopDBInstance",
+                "savingsplans:Describe*"
             ],
             "Resource": [
                 "*"
