@@ -5,6 +5,9 @@
             "Sid": "ParkMyCloudManagement",
             "Action": [
                 "autoscaling:Describe*",
+                "ce:Describe*",
+                "ce:Get*",
+                "ce:List*",
                 "ec2:Describe*",
                 "iam:GetUser",
                 "rds:Describe*",
