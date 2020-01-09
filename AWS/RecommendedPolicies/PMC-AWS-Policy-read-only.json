@@ -1,6 +1,6 @@
 {
     "Version": "2012-10-17",
-    "Id": "ParkMyCloudReadOnlyPolicyAsOf2020-01-05",
+    "Id": "ParkMyCloudReadOnlyPolicyAsOf2020-01-09",
     "Statement": [{
             "Sid": "ParkMyCloudManagement",
             "Action": [

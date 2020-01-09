@@ -30,7 +30,7 @@ resource "aws_iam_role_policy" "ParkMyCloud_policy" {
   policy = <<EOF
 {
   "Version": "2012-10-17",
-  "Id": "ParkMyCloudRecommendedPolicyAsOf2019-10-23",
+  "Id": "ParkMyCloudRecommendedPolicyAsOf2020-01-09",
   "Statement": [{
         "Sid": "ParkMyCloudManagement",
         "Action": [

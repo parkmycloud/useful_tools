@@ -1,6 +1,6 @@
 {
     "Version": "2012-10-17",
-    "Id":"ParkMyCloudRecommendedPolicyWithTaggingAsOf2020-01-05",
+    "Id":"ParkMyCloudRecommendedPolicyWithTaggingAsOf2020-01-09",
     "Statement": [
         {
             "Sid": "DescribeResources",
