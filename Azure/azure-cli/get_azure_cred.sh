@@ -11,10 +11,6 @@
 #
 # Reference: https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-group-authenticate-service-principal-cli
 
-AzureCmd="az"
-AzureVersion="none"
-# Use separate log file for each important step.
-
 PMCAzure=$HOME/.PMCAzure
 AzureCliInstallLog=$PMCAzure/0.AzureCliInstallLog
 AzureLoginLog=$PMCAzure/1.PMCAzureLoginLog
@@ -43,6 +39,40 @@ if [ -z "$haswhip" ]; then
 	fi
 fi
 
+# check for jq
+hasjq=`which jq`
+if [ -z "$haswhip" ]; then
+		echo "This program requires the jq utility to run."
+		echo "Please install it and ensure the program is in your path."
+		exit 1
+fi
+
+# Install Azure CLI (if it doesn't exist already)
+AzureCmd="az"
+hasAzureCli=`which $AzureCmd`
+if [ -z "$hasAzureCli" ]; then
+	echo "This program requires the Azure CLI to run"
+	echo "Please install it using the documentation at the following site:"
+	echo "    https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-apt?view=azure-cli-latest"
+	exit 1
+fi
+
+AzureVersion=`$AzureCmd --version`
+AzureVersion=`echo $AzureVersion | awk '{print $2}'`
+echo "You have Azure CLI version: $AzureVersion"
+major=`echo $AzureVersion | cut -d. -f1`
+minor=`echo $AzureVersion | cut -d. -f2`
+if [[ $major < 2 || ($major == 2 && $minor < 1) ]]; then
+	echo "This program requires Azure CLI version 2.1.0 or higher"
+	echo "Please update the CLI using the documentation at the following site:"
+	echo "    https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-apt?view=azure-cli-latest"
+	echo "Note that in some cases you need to uninstall the current version in order to get the"
+	echo "latest version.  We have found that for Ubuntu environments, the single command method at:"
+	echo "    https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-apt?view=azure-cli-latest#install-with-one-command"
+	echo "is more reliable for getting the latest version than apt-get upgrade."
+	exit 1
+fi
+
 function fail_on_error() {
 	theErr=$?
 if [ $theErr != 0 ]; then
@@ -55,8 +85,8 @@ if [ $theErr != 0 ]; then
 
 	if [ "$AzureVersion" != "none" ]; then
 		echo
-		$AzureCmd logout
-		echo "Logged out of Azure CLI"
+		#$AzureCmd logout
+		#echo "Logged out of Azure CLI"
 	fi
 
     exit 1
@@ -112,36 +142,6 @@ else
 	rm $PMCAzure/*
 fi
 
-# Install Azure CLI (if it doesn't exist already)
-# Need to figure out how to determine if azure-cli is installed
-
-AzureCheck=`$AzureCmd -v | head --lines=1`
-
-# Did we get result: command not found
-if [[ "$AzureCheck" == "" ]]; then
-    echo "Installing azure cli in accordance with instructions from"
-    echo "    https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-apt?view=azure-cli-latest"
-	echo "If you encounter any errors, see this page for troubleshooting tips. If"
-	echo "you continue to have issues, please contact support@parkmycloud.com"
-	echo
-	AZ_REPO=$(lsb_release -cs)
-	fail_on_error "Unable to identify this release; install failed."
-	echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | \
-		sudo tee /etc/apt/sources.list.d/azure-cli.list
-	fail_on_error "Unable to set sources list for azure cli download"
-	curl -L https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
-	fail_on_error "Unable to get the Microsoft signing key"
-	sudo apt-get --yes update
-	fail_on_error "Unable to run apt-get update"
-	sudo apt-get install --yes apt-transport-https
-	fail_on_error "Unable to apt-get install apt-transport-https"
-	sudo apt-get install --yes azure-cli
-	fail_on_error "Unable to apt-get install azure-cli"
-fi
-
-AzureVersion=`$AzureCmd -v | head --lines=1`
-echo "Using Azure CLI version: $AzureVersion"
-echo
 
 # checks the status of the login
 # Call as: check_az_login <name of log file to insect>
@@ -197,22 +197,17 @@ done
 
 az_login
 
-$AzureCmd account list --output tsv > $AzureAccountLog
+$AzureCmd account list --output json > $AzureAccountLog
 fail_on_error "Unable to get account list"
 
-TenantIDs=(`cat $AzureAccountLog | cut -f6`)
+# Get a list of the unique tenant IDs
+UniqueTenantIDs=(`jq -r '[.[].tenantId] | unique | .[]' $AzureAccountLog`)
 
-# Find the unique tenant IDs
-UniqueTenantIDs=($(printf "%s\n" "${TenantIDs[@]}" | sort -u))
-#debug echo "Unique tenants: ${UniqueTenantIDs[@]}"
-
-# Get account details in order to determine the default Tenant ID
-$AzureCmd account show --output tsv > $AzureAccountDetailsLog
-fail_on_error "Unable to get account details"
+# debug echo "Unique tenants: ${UniqueTenantIDs[@]}"
 
 # get the default TenantID
-DefaultTenantID=(`cat $AzureAccountDetailsLog | cut -f6`)
-#debug echo "Found default tenant: $DefaultTenantID"
+DefaultTenantID=(`jq -r '.[] | select(.isDefault == true) | .tenantId' $AzureAccountLog`)
+# debug echo "Found default tenant: $DefaultTenantID"
 
 # Is there more than one tenant ID?
 if [ ${#UniqueTenantIDs[@]} > 1 ]; then
@@ -271,6 +266,9 @@ fi
 # Get the subscriptions for just the good tenant
 SubscriptionIDs=(`cat $AzureAccountLog | grep $TenantID | cut -f2`)
 AccountNames=(`cat $AzureAccountLog | grep $TenantID | cut -f4`)
+
+SubscriptionIDs=(`jq -r --arg TENANTID "$TenantID" '.[] | select(.tenantId==$TENANTID) | .id'  $AzureAccountLog`)
+AccountNames=(`jq -r --arg TENANTID "$TenantID" '.[] | select(.tenantId==$TENANTID) | .name'  $AzureAccountLog`)
 
 # How many subscriptions are there?
 CountSubs=${#SubscriptionIDs[@]}
@@ -345,35 +343,45 @@ CredPassword="";
     	fi
 	done
 
+ExpirationDate=`date '+%C%y-%m-%d' -d "+1095 days"`
+
 echo
 echo "About to create application service account in Azure using:"
 echo "  Display name:         $DisplayName"
 echo "  Home page:            $HomePage"
 echo "  Identifier URIs:      $IdentifierUris"
+echo "  Password expiration:  $ExpirationDate (3 years)"
 #debug echo "  Application password: $CredPassword"
 #debug echo "About to run:"
-#debug echo "$AzureCmd ad app create --display-name '$DisplayName' --homepage $HomePage --identifier-uris $IdentifierUris --password $CredPassword --output tsv"
-$AzureCmd ad app create --display-name "$DisplayName" --homepage $HomePage --identifier-uris $IdentifierUris --password $CredPassword --output tsv > $AzureAppLog
+#debug echo "$AzureCmd ad app create --display-name '$DisplayName' --homepage $HomePage --identifier-uris $IdentifierUris --password $CredPassword --output json"
+$AzureCmd ad app create --display-name "$DisplayName" \
+	--homepage $HomePage \
+	--identifier-uris $IdentifierUris \
+	--password $CredPassword \
+	--end-date $ExpirationDate \
+	--output json > $AzureAppLog
 
 fail_on_error "Unable to create application service account. See $AzureAppLog"
 
-AppID=(`cat $AzureAppLog | cut -f3`)
+AppID=(`jq -r '.appId' $AzureAppLog`)
 echo "Application service account created."
 echo "Received AppID: $AppID"
 echo
 echo -n "Creating Service Principal..."
-$AzureCmd ad sp create --id $AppID --output tsv > $AzureServicePrincipalLog
+$AzureCmd ad sp create --id $AppID --output json > $AzureServicePrincipalLog
 fail_on_error "Unable to create Service Principal. See $AzureServicePrincipalLog"
-ServicePrincipalObjectID=(`cat $AzureServicePrincipalLog | cut -f17`)
+ServicePrincipalObjectID=(`jq -r '.objectId' $AzureServicePrincipalLog`)
 echo "Received Service Principal Object ID: $ServicePrincipalObjectID"
 
 echo -n "Waiting for Service Principal to show up in Azure AD..."
 while [ -z "$SP_Present" ];
 do
 	echo -n "."
-    SP_Present=`$AzureCmd ad sp list --all | grep $ServicePrincipalObjectID`
+	# debug echo "trying command: $AzureCmd ad sp list --all --output json | jq -r --arg SPOID $ServicePrincipalObjectID '.[] | select(.objectId==\$SPOID)'"
+    SP_Present=`$AzureCmd ad sp list --all --output json | jq -r --arg SPOID $ServicePrincipalObjectID '.[] | select(.objectId==$SPOID)'`
     sleep 1
 done
+# debug echo $SP_Present
 echo "ok"
 
 echo
@@ -415,12 +423,11 @@ echo
 echo
 echo -n "Creating role definition in Azure..."
 $AzureCmd role definition create --role-definition $PMCAzure/PMCAzurePolicyCustomized.json \
-	--output tsv > $AzureRoleLog
+	--output json > $AzureRoleLog
 fail_on_error "Unable to create role definition.  See $AzureRoleLog"
-RoleDefinitionID=(`cat $AzureRoleLog | cut -f4`)
-echo "ok"
-#debug echo "See $AzureRoleLog"
-echo "Using Role definition ID: $RoleDefinitionID"
+
+RoleDefinitionID=(`jq -r '.name' $AzureRoleLog`)
+echo "done. Using Role definition ID: $RoleDefinitionID"
 
 echo
 echo "For each subscription, assigning custom role to service principal..."
@@ -428,12 +435,14 @@ rm -f $AzureRoleMapLog
 touch $AzureRoleMapLog
 for sub in ${SubsForPMC[@]}; do
 	echo -n "Assigning role to subscription: ${SubscriptionIDs[$sub]}..."
-	#debug echo "Using cmd: $AzureCmd role assignment create --scope /subscriptions/${SubscriptionIDs[$sub]} --assignee-object-id $ServicePrincipalObjectID --role \"$RoleDefinitionID\""
+	# Watch out for gotcha described here: https://docs.microsoft.com/bs-latn-ba/azure/role-based-access-control/role-assignments-template#new-service-principal
+	#debug echo "Using cmd: $AzureCmd role assignment create --scope /subscriptions/${SubscriptionIDs[$sub]} --assignee-object-id $ServicePrincipalObjectID --assignee-principal-type ServicePrincipal --role \"$RoleDefinitionID\""
 	echo "Assigning role to subscription: ${SubscriptionIDs[$sub]}" >> $AzureRoleMapLog
 	$AzureCmd role assignment create --scope /subscriptions/${SubscriptionIDs[$sub]} \
 		--assignee-object-id $ServicePrincipalObjectID \
+		--assignee-principal-type ServicePrincipal \
 		--role "$RoleDefinitionID" >> $AzureRoleMapLog
-	fail_on_error "Unable to assign role to subscription.  See final entry in $AzureRoleMapLog"
+	fail_on_error "Unable to assign role to subscription.  See error echoed above or final entry in $AzureRoleMapLog for details. If the error says the Principal does not exist in the directory, then you may not be running the most recent Azure CLI."
 	echo "ok"
 done
 #debug echo "See $AzureRoleMapLog"
@@ -454,9 +463,12 @@ for sub in ${SubsForPMC[@]}; do
 	echo "  Cloud Credential Nickname: ${AccountNames[$sub]}"
 	echo "            Subscription ID: ${SubscriptionIDs[$sub]}"
 	echo "                   Offer ID: See the subscription details in Azure Console"
+	echo "                             (Note: Azure Enterprise Agreement customers"
+	echo "                             can leave Offer ID blank)"
 	echo "                  Tenant ID: $TenantID"
 	echo "                     App ID: $AppID"
 	echo "             App Access Key: Password you created a moment ago"
+	echo "        Password expiration: $ExpirationDate"
 	echo 
 	i=$[$i+1]
 done
@@ -477,6 +489,8 @@ echo "All of the credentials listed below use the Application:"
 echo "  Display name:         $DisplayName"
 echo "This can be seen in the Azure console at Azure Active Directory-->App"
 echo "Registrations, and select/search under the All Applications option"
+echo
+echo "Script log items are stored at $HOME/.PMCAzure"
 echo
 echo "============================================================================"
 
