@@ -10,7 +10,7 @@ These files are identical in content but have two different names for backwards 
 
 ## PMC-AWS-Policy-with-tagging.json
 
-Same permissions as the base recommended policy, but requires a tag on certain resources in order to allow start/stop action.  Good for AWS accounts that contain a mixture of  Dev/Test/Production resources.
+Same permissions as the base recommended policy, but requires a tag on certain resources in order to allow start/stop action.  Good for AWS accounts that contain a mixture of  Dev/Test/Production resources. Note that not all "write" permissions can be limited by tag.
 
 ## PMC-AWS-Policy-simple.json
 
@@ -19,3 +19,7 @@ Most of the core functionality of the recommended policy, but laid out in the si
 ## PMC-AWS-Policy-read-only.json
 
 Policy that does not allow ParkMyCloud to modify any part of your environment.
+
+## PMCRecommendedAWSGovCloudPolicy.json
+
+Jult like `PMCRecommendedAWSPolicy.json`, except it does not have permissions for services not yet supported in GovCloud.

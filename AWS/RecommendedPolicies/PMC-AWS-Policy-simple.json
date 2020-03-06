@@ -1,6 +1,6 @@
 {
     "Version": "2012-10-17",
-    "Id":"ParkMyCloudRecommendedSimplePolicyAsOf2020-01-09",
+    "Id":"ParkMyCloudRecommendedSimplePolicyAsOf2020-03-05",
     "Statement": [
         {
             "Action": [
@@ -17,6 +17,12 @@
                 "ec2:ModifyInstanceAttribute",
                 "ec2:StartInstances",
                 "ec2:StopInstances",
+                "ecs:Describe*",
+                "ecs:List*",
+                "ecs:UpdateService",
+                "eks:Describe*",
+                "eks:List*",
+                "eks:UpdateNodegroupConfig",
                 "iam:GetUser",
                 "kms:CreateGrant",
                 "rds:Describe*",

@@ -1,6 +1,6 @@
 {
     "Version": "2012-10-17",
-    "Id": "ParkMyCloudReadOnlyPolicyAsOf2020-01-09",
+    "Id": "ParkMyCloudReadOnlyPolicyAsOf2020-03-05",
     "Statement": [{
             "Sid": "ParkMyCloudManagement",
             "Action": [
@@ -9,6 +9,10 @@
                 "ce:Get*",
                 "ce:List*",
                 "ec2:Describe*",
+                "ecs:Describe*",
+                "ecs:List*",
+                "eks:Describe*",
+                "eks:List*",
                 "iam:GetUser",
                 "rds:Describe*",
                 "rds:ListTagsForResource",

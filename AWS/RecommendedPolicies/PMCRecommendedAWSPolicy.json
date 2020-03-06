@@ -1,6 +1,6 @@
 {
     "Version": "2012-10-17",
-    "Id": "ParkMyCloudRecommendedPolicyAsOf2020-01-09",
+    "Id": "ParkMyCloudRecommendedPolicyAsOf2020-03-05",
     "Statement": [{
             "Sid": "ParkMyCloudManagement",
             "Action": [
@@ -15,6 +15,12 @@
                 "ec2:ModifyInstanceAttribute",
                 "ec2:StartInstances",
                 "ec2:StopInstances",
+                "ecs:Describe*",
+                "ecs:List*",
+                "ecs:UpdateService",
+                "eks:Describe*",
+                "eks:List*",
+                "eks:UpdateNodegroupConfig",
                 "iam:GetUser",
                 "rds:Describe*",
                 "rds:ListTagsForResource",

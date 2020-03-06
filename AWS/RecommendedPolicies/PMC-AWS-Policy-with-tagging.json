@@ -1,6 +1,6 @@
 {
     "Version": "2012-10-17",
-    "Id":"ParkMyCloudRecommendedPolicyWithTaggingAsOf2020-01-09",
+    "Id":"ParkMyCloudRecommendedPolicyWithTaggingAsOf2020-03-05",
     "Statement": [
         {
             "Sid": "DescribeResources",
@@ -10,6 +10,10 @@
                 "ce:Get*",
                 "ce:List*",
                 "ec2:Describe*",
+                "ecs:Describe*",
+                "ecs:List*",
+                "eks:Describe*",
+                "eks:List*",
                 "iam:GetUser",
                 "rds:Describe*",
                 "rds:ListTagsForResource",
@@ -22,6 +26,15 @@
             "Sid": "ModifyEC2",
             "Action": [
                 "ec2:ModifyInstanceAttribute"
+            ],
+            "Resource": "*",
+            "Effect": "Allow"
+        },
+        {
+            "Sid": "ModifyECSEKS",
+            "Action": [
+                "ecs:UpdateService",
+                "eks:UpdateNodegroupConfig"
             ],
             "Resource": "*",
             "Effect": "Allow"
