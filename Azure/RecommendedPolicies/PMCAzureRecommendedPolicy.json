@@ -1,6 +1,6 @@
 {
-    "Name": "ParkMyCloud Limited Access",
-    "Description": "ParkMyCloud limited access",
+    "Name": "ParkMyCloud Limited Access 2020-04-17",
+    "Description": "ParkMyCloud limited access policy as of 2020-04-17",
     "IsCustom": "true",
     "Actions": [
         "Microsoft.Capacity/reservationOrders/*/read",
@@ -13,6 +13,8 @@
         "Microsoft.Compute/virtualMachineScaleSets/start/action",
         "Microsoft.Compute/virtualMachineScaleSets/deallocate/action",
         "Microsoft.Consumption/*/read",
+        "Microsoft.ContainerService/managedClusters/agentPools/read",
+        "Microsoft.ContainerService/managedClusters/read",
         "Microsoft.Insights/*/read",
         "Microsoft.Insights/AutoscaleSettings/Write",
         "Microsoft.Network/networkInterfaces/read",
