@@ -49,7 +49,7 @@ function create_rg() {
 function delete_rg() {
     echo "Deleting resource group $RESOURCE_GROUP in subscription $SUBSCRIPTION"
     
-    az group create --name $RESOURCE_GROUP \
+    az group delete --name $RESOURCE_GROUP \
         --subscription $SUBSCRIPTION
     fail_on_error "Failed to create rg: $RESOURCE_GROUP"
 }
