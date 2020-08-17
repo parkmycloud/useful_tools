@@ -1,6 +1,6 @@
 {
     "Version": "2012-10-17",
-    "Id": "ParkMyCloudReadOnlyPolicyAsOf2020-03-05",
+    "Id": "ParkMyCloudReadOnlyPolicyAsOf2020-04-17",
     "Statement": [{
             "Sid": "ParkMyCloudManagement",
             "Action": [
@@ -16,6 +16,7 @@
                 "iam:GetUser",
                 "rds:Describe*",
                 "rds:ListTagsForResource",
+                "redshift:Describe*",
                 "savingsplans:Describe*"
             ],
             "Resource": "*",

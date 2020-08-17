@@ -1,6 +1,6 @@
 {
     "Version": "2012-10-17",
-    "Id":"ParkMyCloudRecommendedPolicyWithTaggingAsOf2020-03-05",
+    "Id":"ParkMyCloudRecommendedPolicyWithTaggingAsOf2020-04-17",
     "Statement": [
         {
             "Sid": "DescribeResources",
@@ -17,6 +17,10 @@
                 "iam:GetUser",
                 "rds:Describe*",
                 "rds:ListTagsForResource",
+                "redshift:Describe*",
+                "redshift:PauseCluster",
+                "redshift:ResizeCluster",
+                "redshift:ResumeCluster",
                 "savingsplans:Describe*"
             ],
             "Resource": "*",
@@ -92,6 +96,20 @@
             "Condition": {
                 "StringEquals": {
                     "rds:cluster-tag/parkmycloud": "yes"
+                }
+            },
+            "Resource": "*",
+            "Effect": "Allow"
+        },
+        {
+            "Sid": "AllowTaggedRedshiftOnly",
+            "Action": [
+                "rds:StartDBCluster",
+                "rds:StopDBCluster"
+            ],
+            "Condition": {
+                "StringEquals": {
+                    "redshift:ResourceTag/parkmycloud": "yes"
                 }
             },
             "Resource": "*",

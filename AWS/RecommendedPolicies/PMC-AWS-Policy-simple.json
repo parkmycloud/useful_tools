@@ -1,6 +1,6 @@
 {
     "Version": "2012-10-17",
-    "Id":"ParkMyCloudRecommendedSimplePolicyAsOf2020-03-05",
+    "Id":"ParkMyCloudRecommendedSimplePolicyAsOf2020-04-17",
     "Statement": [
         {
             "Action": [
@@ -32,6 +32,10 @@
                 "rds:StartDBInstance",
                 "rds:StopDBCluster",
                 "rds:StopDBInstance",
+                "redshift:Describe*",
+                "redshift:PauseCluster",
+                "redshift:ResizeCluster",
+                "redshift:ResumeCluster",
                 "savingsplans:Describe*"
             ],
             "Resource": [
