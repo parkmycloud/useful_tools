@@ -1,6 +1,6 @@
 {
-    "Name": "ParkMyCloud Limited Access 2020-04-17",
-    "Description": "ParkMyCloud limited access policy as of 2020-04-17",
+    "Name": "ParkMyCloud Limited Access 2020-08-17",
+    "Description": "ParkMyCloud limited access policy as of 2020-08-17",
     "IsCustom": "true",
     "Actions": [
         "Microsoft.Capacity/reservationOrders/*/read",
@@ -19,7 +19,16 @@
         "Microsoft.Insights/AutoscaleSettings/Write",
         "Microsoft.Network/networkInterfaces/read",
         "Microsoft.Network/publicIPAddresses/read",
-        "Microsoft.Resources/subscriptions/*/read"
+        "Microsoft.Resources/subscriptions/*/read",
+        "Microsoft.Sql/managedInstances/*/read",
+        "Microsoft.Sql/managedInstances/write",
+        "Microsoft.Sql/servers/databases/*/read",
+        "Microsoft.Sql/servers/databases/pause/action",
+        "Microsoft.Sql/servers/databases/resume/action",
+        "Microsoft.Sql/servers/databases/write",
+        "Microsoft.Sql/servers/read",
+        "Microsoft.Sql/servers/elasticPools/*/read",
+        "Microsoft.Sql/servers/elasticPools/write"        
     ],
     "NotActions": [],
     "AssignableScopes": [
